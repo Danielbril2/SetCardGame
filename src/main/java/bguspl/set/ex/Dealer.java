@@ -145,6 +145,7 @@ public class Dealer implements Runnable {
      * Returns all the cards from the table to the deck.
      */
     private void removeAllCardsFromTable() {
+        env.ui.removeTokens();
         // adds the cards from the table to the deck and resets the arrays
         for(int i = 0; i < table.slotToCard.length; i++){
             deck.add(table.slotToCard[i]);
@@ -157,7 +158,7 @@ public class Dealer implements Runnable {
      * Check who is/are the winner/s and displays them.
      */
     private void announceWinners() {
-        List<Player> winners = new ArrayList<>();
+        List<Player> winnersList = new ArrayList<>();
         int maxScore = 0;
         for(Player p : players) {
             if (p.getScore() > maxScore)
@@ -165,9 +166,12 @@ public class Dealer implements Runnable {
         }
         for(Player p : players) {
             if (p.getScore() == maxScore)
-                winners.add(p);
+                winnersList.add(p);
         }
-        // TODO display the winner
+        int[] winners = new int[winnersList.size()];
+        for(int i = 0; i < winners.length; i++)
+            winners[i] = winnersList.remove(0).id;
+        env.ui.announceWinner(winners);
     }
 
     private void CreatePlayersThreads()
