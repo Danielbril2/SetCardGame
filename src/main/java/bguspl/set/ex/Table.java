@@ -179,4 +179,18 @@ public class Table {
         //add token
         placeToken(player,slot);
     }
+
+    public boolean isCheck(int player)
+    {
+        return tokens[player].length == 3; //returns true if we has 3 tokens
+    }
+
+    public int[] getPlayerCards(int player)
+    {
+        Integer[] playerTokens = tokens[player];
+        int[] res = new int[3];
+
+
+        return res;
+    }
 }

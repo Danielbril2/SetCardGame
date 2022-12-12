@@ -55,6 +55,7 @@ public class Player implements Runnable {
     private int score;
 
     private Queue<Integer> actionQueue;
+    private Dealer dealer;
 
     /**
      * The class constructor.
@@ -71,6 +72,7 @@ public class Player implements Runnable {
         this.id = id;
         this.human = human;
         this.actionQueue = new LinkedList<>();
+        this.dealer = dealer;
     }
 
     /**
@@ -88,6 +90,14 @@ public class Player implements Runnable {
                 int action = actionQueue.poll();
                 //implement action
                 table.makeAction(id,action);
+                //ask table if we has 3 tokens
+                boolean hasSet = table.isCheck(id);
+                if (hasSet)
+                {
+                    int[] cards = table.getPlayerCards(id);
+                    //dealer.checkIfSet(cards);
+                }
+
             }
         }
         if (!human) try { aiThread.join(); } catch (InterruptedException ignored) {}
@@ -144,7 +154,6 @@ public class Player implements Runnable {
      * @post - the player's score is updated in the ui.
      */
     public void point() {
-        // TODO implement
         env.ui.setScore(id, ++score);
         long startTime = System.currentTimeMillis();
         long remainTime = System.currentTimeMillis() - startTime;
@@ -163,7 +172,6 @@ public class Player implements Runnable {
      * Penalize a player and perform other related actions.
      */
     public void penalty() {
-        // TODO implement
         long startTime = System.currentTimeMillis();
         long remainTime = System.currentTimeMillis() - startTime;
         while (remainTime < env.config.penaltyFreezeMillis)
