@@ -1,8 +1,10 @@
 package bguspl.set.ex;
 
 import bguspl.set.Env;
+import bguspl.set.UtilImpl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -18,6 +20,7 @@ public class Dealer implements Runnable {
      */
     private final Env env;
 
+    private final UtilImpl utiliml;
     /**
      * Game entities.
      */
@@ -37,13 +40,14 @@ public class Dealer implements Runnable {
     /**
      * The time when the dealer needs to reshuffle the deck due to turn timeout.
      */
-    private long reshuffleTime = Long.MAX_VALUE; // need to change
+    private long reshuffleTime = 60000; // one minute
 
     public Dealer(Env env, Table table, Player[] players) {
         this.env = env;
         this.table = table;
         this.players = players;
         deck = IntStream.range(0, env.config.deckSize).boxed().collect(Collectors.toList());
+        utiliml = new UtilImpl(env.config);
     }
 
     /**
@@ -97,7 +101,15 @@ public class Dealer implements Runnable {
      * Checks cards should be removed from the table and removes them.
      */
     private void removeCardsFromTable() {
-        // TODO implement
+        // if there is no legal set on the table
+        List<Integer> cards = new ArrayList<>();
+        Collections.addAll(cards, table.slotToCard);
+        boolean legalSetExists = utiliml.findSets(cards, 1).size() > 0;
+        if(!legalSetExists){
+            removeAllCardsFromTable();
+            placeCardsOnTable();
+        }
+        // TODO now we need to check if a player has declared a set and remove the cards of the set
     }
 
     /**
@@ -107,10 +119,8 @@ public class Dealer implements Runnable {
         if (deck.size() >= env.config.tableSize - table.countCards()) {
             if (table.countCards() < env.config.tableSize) {
                 for (int i = 0; i < table.slotToCard.length; i++) {
-                    if (table.slotToCard[i] == null) {
-                        table.slotToCard[i] = deck.remove(0);
-                        table.cardToSlot[table.slotToCard[i]] = i;
-                    }
+                    if (table.slotToCard[i] == null)
+                        table.placeCard(deck.remove(0), i);
                 }
             }
         }
@@ -137,8 +147,7 @@ public class Dealer implements Runnable {
         // adds the cards from the table to the deck and resets the arrays
         for(int i = 0; i < table.slotToCard.length; i++){
             deck.add(table.slotToCard[i]);
-            table.cardToSlot[table.slotToCard[i]] = null;
-            table.slotToCard[i] = null;
+            table.removeCard(i);
         }
         // the dealer thread need to sleep
         try {

@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-//fwfwffw
 /**
  * This class contains the data that is visible to the player.
  *
@@ -112,8 +111,8 @@ public class Table {
 
         // TODO implement
         int card = slotToCard[slot];
-        slotToCard[slot] = -1;
-        cardToSlot[card] = -1;
+        slotToCard[slot] = null;
+        cardToSlot[card] = null;
         env.ui.removeCard(slot);
     }
 
