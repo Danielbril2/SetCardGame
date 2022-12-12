@@ -165,7 +165,7 @@ public class Player implements Runnable {
 
 
         int ignored = table.countCards(); // this part is just for demonstration in the unit tests
-        env.ui.setScore(id, ++score);
+        //env.ui.setScore(id, ++score);
     }
 
     /**
