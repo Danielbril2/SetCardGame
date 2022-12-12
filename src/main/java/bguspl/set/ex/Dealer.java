@@ -114,6 +114,8 @@ public class Dealer implements Runnable {
                 }
             }
         }
+
+        //notify all players
     }
 
     /**
@@ -140,10 +142,7 @@ public class Dealer implements Runnable {
             table.cardToSlot[table.slotToCard[i]] = null;
             table.slotToCard[i] = null;
         }
-        // the dealer thread need to sleep
-        try {
-            Thread.sleep(10);
-        } catch (InterruptedException ignored) {}
+        //wait to all players
     }
 
     /**
