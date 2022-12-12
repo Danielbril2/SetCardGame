@@ -164,7 +164,7 @@ public class Dealer implements Runnable {
         boolean isSet = utilimpl.testSet(cards);
         if(isSet){
             p.point();
-            removeCardsFromTable();
+            removeCardsFromTable(); // TODO remove the cards of the legal set from the table
         }
         else
             p.penalty();
