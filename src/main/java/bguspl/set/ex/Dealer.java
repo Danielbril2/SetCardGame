@@ -11,7 +11,6 @@ import java.util.stream.IntStream;
 /**
  * This class manages the dealer's threads and data
  */
-//BEST UPDATE
 public class Dealer implements Runnable {
 
     /**
@@ -105,11 +104,13 @@ public class Dealer implements Runnable {
      * Check if any cards can be removed from the deck and placed on the table.
      */
     private void placeCardsOnTable() {
-        if(table.countCards() < 12){
-            for(int i = 0; i < table.slotToCard.length; i++){
-                if(table.slotToCard[i] == null){
-                    table.slotToCard[i] = deck.remove(0);
-                    table.cardToSlot[table.slotToCard[i]] = i;
+        if (deck.size() >= env.config.tableSize - table.countCards()) {
+            if (table.countCards() < env.config.tableSize) {
+                for (int i = 0; i < table.slotToCard.length; i++) {
+                    if (table.slotToCard[i] == null) {
+                        table.slotToCard[i] = deck.remove(0);
+                        table.cardToSlot[table.slotToCard[i]] = i;
+                    }
                 }
             }
         }
