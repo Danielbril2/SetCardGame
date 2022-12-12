@@ -2,6 +2,7 @@ package bguspl.set.ex;
 
 import bguspl.set.Env;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -36,7 +37,7 @@ public class Dealer implements Runnable {
     /**
      * The time when the dealer needs to reshuffle the deck due to turn timeout.
      */
-    private long reshuffleTime = Long.MAX_VALUE;
+    private long reshuffleTime = Long.MAX_VALUE; // need to change
 
     public Dealer(Env env, Table table, Player[] players) {
         this.env = env;
@@ -51,6 +52,9 @@ public class Dealer implements Runnable {
     @Override
     public void run() {
         env.logger.log(Level.INFO, "Thread " + Thread.currentThread().getName() + " starting.");
+
+        CreatePlayersThreads(); // creating players threads
+
         while (!shouldFinish()) {
             placeCardsOnTable();
             timerLoop();
@@ -100,7 +104,14 @@ public class Dealer implements Runnable {
      * Check if any cards can be removed from the deck and placed on the table.
      */
     private void placeCardsOnTable() {
-        // TODO implement
+        if(table.countCards() < 12){
+            for(int i = 0; i < table.slotToCard.length; i++){
+                if(table.slotToCard[i] == null){
+                    table.slotToCard[i] = deck.remove(0);
+                    table.cardToSlot[table.slotToCard[i]] = i;
+                }
+            }
+        }
     }
 
     /**
@@ -121,13 +132,42 @@ public class Dealer implements Runnable {
      * Returns all the cards from the table to the deck.
      */
     private void removeAllCardsFromTable() {
-        // TODO implement
+        // adds the cards from the table to the deck and resets the arrays
+        for(int i = 0; i < table.slotToCard.length; i++){
+            deck.add(table.slotToCard[i]);
+            table.cardToSlot[table.slotToCard[i]] = null;
+            table.slotToCard[i] = null;
+        }
+        // the dealer thread need to sleep
+        try {
+            Thread.sleep(10);
+        } catch (InterruptedException ignored) {}
     }
 
     /**
      * Check who is/are the winner/s and displays them.
      */
     private void announceWinners() {
-        // TODO implement
+        List<Player> winners = new ArrayList<>();
+        int maxScore = 0;
+        for(Player p : players) {
+            if (p.getScore() > maxScore)
+                maxScore = p.getScore();
+        }
+        for(Player p : players) {
+            if (p.getScore() == maxScore)
+                winners.add(p);
+        }
+        // TODO display the winner
+    }
+
+    private void CreatePlayersThreads()
+    {
+        String[] names = env.config.playerNames;
+        for (int i = 0; i < players.length; i++)
+        {
+            Thread player = new Thread(players[i],names[i]);
+            player.start();
+        }
     }
 }
