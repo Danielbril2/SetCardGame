@@ -1,6 +1,7 @@
 package bguspl.set.ex;
 
 import bguspl.set.Env;
+import bguspl.set.UtilImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +18,8 @@ public class Dealer implements Runnable {
      * The game environment object.
      */
     private final Env env;
+
+    private final UtilImpl utilimpl;
 
     /**
      * Game entities.
@@ -37,13 +40,14 @@ public class Dealer implements Runnable {
     /**
      * The time when the dealer needs to reshuffle the deck due to turn timeout.
      */
-    private long reshuffleTime = Long.MAX_VALUE; // need to change
+    private long reshuffleTime =  60000; // one minute
 
     public Dealer(Env env, Table table, Player[] players) {
         this.env = env;
         this.table = table;
         this.players = players;
         deck = IntStream.range(0, env.config.deckSize).boxed().collect(Collectors.toList());
+        utilimpl = new UtilImpl(env.config);
     }
 
     /**
@@ -97,7 +101,16 @@ public class Dealer implements Runnable {
      * Checks cards should be removed from the table and removes them.
      */
     private void removeCardsFromTable() {
-        // TODO implement
+        // if there is no legal set on the table
+        List<Integer> cards = new ArrayList<>();
+        for (Integer card : table.slotToCard)
+            cards.add(card);
+        boolean legalSetExists = utilimpl.findSets(cards, 1).size() > 0;
+        if(!legalSetExists){
+            removeAllCardsFromTable();
+            placeCardsOnTable();
+        }
+        // check if there is a set that
     }
 
     /**
@@ -114,6 +127,7 @@ public class Dealer implements Runnable {
                 }
             }
         }
+        // notify all
     }
 
     /**
@@ -140,10 +154,7 @@ public class Dealer implements Runnable {
             table.cardToSlot[table.slotToCard[i]] = null;
             table.slotToCard[i] = null;
         }
-        // the dealer thread need to sleep
-        try {
-            Thread.sleep(10);
-        } catch (InterruptedException ignored) {}
+        // wait
     }
 
     /**
