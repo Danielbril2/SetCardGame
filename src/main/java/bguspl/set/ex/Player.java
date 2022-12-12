@@ -145,6 +145,15 @@ public class Player implements Runnable {
      */
     public void point() {
         // TODO implement
+        env.ui.setScore(id, ++score);
+        long startTime = System.currentTimeMillis();
+        long remainTime = System.currentTimeMillis() - startTime;
+        while (remainTime < env.config.pointFreezeMillis)
+        {
+            env.ui.setFreeze(this.id,remainTime);
+            remainTime = System.currentTimeMillis() - startTime;
+        }
+
 
         int ignored = table.countCards(); // this part is just for demonstration in the unit tests
         env.ui.setScore(id, ++score);
@@ -155,6 +164,17 @@ public class Player implements Runnable {
      */
     public void penalty() {
         // TODO implement
+        long startTime = System.currentTimeMillis();
+        long remainTime = System.currentTimeMillis() - startTime;
+        while (remainTime < env.config.penaltyFreezeMillis)
+        {
+            env.ui.setFreeze(this.id,remainTime);
+            remainTime = System.currentTimeMillis() - startTime;
+        }
+
+        try {
+            Thread.sleep(env.config.penaltyFreezeMillis);}
+        catch (InterruptedException ignored) {}
     }
 
     public int getScore() {
