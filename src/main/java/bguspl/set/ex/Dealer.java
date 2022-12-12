@@ -64,6 +64,7 @@ public class Dealer implements Runnable {
             timerLoop();
             updateTimerDisplay(false);
             removeAllCardsFromTable();
+            shuffleCards();
         }
         announceWinners();
         env.logger.log(Level.INFO, "Thread " + Thread.currentThread().getName() + " terminated.");
@@ -127,6 +128,10 @@ public class Dealer implements Runnable {
         // notify all the players
     }
 
+    private void shuffleCards(){
+        Collections.shuffle(deck);
+    }
+
     /**
      * Sleep for a fixed amount of time or until the thread is awakened for some purpose.
      */
@@ -155,13 +160,14 @@ public class Dealer implements Runnable {
     }
 
     public void checkIfSet(int id, int[] cards){
+        Player p = players[id];
         boolean isSet = utilimpl.testSet(cards);
         if(isSet){
-
+            p.point();
+            removeCardsFromTable();
         }
-        else{
-
-        }
+        else
+            p.penalty();
     }
 
     /**
