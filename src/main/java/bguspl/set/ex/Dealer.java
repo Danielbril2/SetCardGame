@@ -11,6 +11,7 @@ import java.util.stream.IntStream;
 /**
  * This class manages the dealer's threads and data
  */
+//2
 public class Dealer implements Runnable {
 
     /**
