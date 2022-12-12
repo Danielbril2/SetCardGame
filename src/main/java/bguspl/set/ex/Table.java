@@ -159,6 +159,7 @@ public class Table {
                 playersAction[i] = playersAction[i + 1];
             }
         }
+
         playersAction[tokenOfPlayer - 1] = -1; // not really necessary but to be sure
         numOfTokens[player]--;
         tokens[player] = playersAction;

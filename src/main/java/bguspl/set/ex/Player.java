@@ -2,6 +2,7 @@ package bguspl.set.ex;
 
 import java.util.*;
 import java.util.logging.Level;
+import java.util.Random;
 
 import bguspl.set.Env;
 
@@ -86,7 +87,6 @@ public class Player implements Runnable {
             {
                 int action = actionQueue.poll();
                 //implement action
-                //check if we already placed token, if yes so delete it, else place
                 table.makeAction(id,action);
             }
         }
