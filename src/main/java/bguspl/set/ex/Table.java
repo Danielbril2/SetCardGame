@@ -146,41 +146,36 @@ public class Table {
         Integer[] playersAction = tokens[player];
         int tokenOfPlayer = numOfTokens[player];
         boolean isRemoved = false;
-
-        for (int i = 0; i < tokenOfPlayer-1; i++)
+        for (int i = 0; i < tokenOfPlayer - 1; i++)
         {
             if (!isRemoved) {
                 if (playersAction[i] == slot) //here should delete the slot
                 {
-                    playersAction[i] = playersAction[i+1];
+                    playersAction[i] = playersAction[i + 1];
                     isRemoved = true;
                 }
             }
             else{
-                playersAction[i] = playersAction[i+1];
+                playersAction[i] = playersAction[i + 1];
             }
         }
-
-        playersAction[tokenOfPlayer-1] = -1; //not really necessary but to be sure
+        playersAction[tokenOfPlayer - 1] = -1; // not really necessary but to be sure
         numOfTokens[player]--;
         tokens[player] = playersAction;
-
         env.ui.removeToken(player,slot);
         return true;
     }
 
-    //checks if we placed token, if so then removes, else, puts the token
+    // checks if we placed token, if so then removes, else, puts the token
     public void makeAction(int player, int slot)
     {
         Integer[] playerTokens = this.tokens[player];
         for (Integer playerToken : playerTokens)
-            if (playerToken == slot) { //remove token
+            if (playerToken == slot) { // remove token
                 removeToken(player, slot);
                 return;
             }
-
         //add token
         placeToken(player,slot);
-
     }
 }
