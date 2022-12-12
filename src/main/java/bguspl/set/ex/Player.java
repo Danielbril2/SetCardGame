@@ -179,10 +179,6 @@ public class Player implements Runnable {
             env.ui.setFreeze(this.id,remainTime);
             remainTime = System.currentTimeMillis() - startTime;
         }
-
-        try {
-            Thread.sleep(env.config.penaltyFreezeMillis);}
-        catch (InterruptedException ignored) {}
     }
 
     public int getScore() {
