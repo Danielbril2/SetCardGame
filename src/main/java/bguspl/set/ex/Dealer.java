@@ -20,7 +20,7 @@ public class Dealer implements Runnable {
      */
     private final Env env;
 
-    private final UtilImpl utiliml;
+    private final UtilImpl utilimpl;
     /**
      * Game entities.
      */
@@ -47,7 +47,7 @@ public class Dealer implements Runnable {
         this.table = table;
         this.players = players;
         deck = IntStream.range(0, env.config.deckSize).boxed().collect(Collectors.toList());
-        utiliml = new UtilImpl(env.config);
+        utilimpl = new UtilImpl(env.config);
     }
 
     /**
@@ -104,7 +104,7 @@ public class Dealer implements Runnable {
         // if there is no legal set on the table
         List<Integer> cards = new ArrayList<>();
         Collections.addAll(cards, table.slotToCard);
-        boolean legalSetExists = utiliml.findSets(cards, 1).size() > 0;
+        boolean legalSetExists = utilimpl.findSets(cards, 1).size() > 0;
         if(!legalSetExists){
             removeAllCardsFromTable();
             placeCardsOnTable();
