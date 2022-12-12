@@ -154,6 +154,16 @@ public class Dealer implements Runnable {
         // do wait for the players
     }
 
+    public void checkIfSet(int id, int[] cards){
+        boolean isSet = utilimpl.testSet(cards);
+        if(isSet){
+
+        }
+        else{
+
+        }
+    }
+
     /**
      * Check who is/are the winner/s and displays them.
      */
