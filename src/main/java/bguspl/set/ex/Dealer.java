@@ -77,8 +77,8 @@ public class Dealer implements Runnable {
         while (!terminate && System.currentTimeMillis() < reshuffleTime) {
             sleepUntilWokenOrTimeout();
             updateTimerDisplay(false);
-            removeCardsFromTable();
-            placeCardsOnTable();
+//            removeCardsFromTable();
+//            placeCardsOnTable();
         }
     }
 
@@ -101,16 +101,9 @@ public class Dealer implements Runnable {
     /**
      * Checks cards should be removed from the table and removes them.
      */
-    private void removeCardsFromTable() {
-        // if there is no legal set on the table
-        List<Integer> cards = new ArrayList<>();
-        Collections.addAll(cards, table.slotToCard);
-        boolean legalSetExists = utilimpl.findSets(cards, 1).size() > 0;
-        if(!legalSetExists){
-            removeAllCardsFromTable();
-            placeCardsOnTable();
-        }
+    private void removeCardsFromTable(int[] cards) {
         // TODO now we need to check if a player has declared a set and remove the cards of the set
+        // ללכת למערך במקום של הקלף ולהוריד מהמקום את הקלף גם במערך וגם בui
     }
 
     /**
@@ -125,6 +118,15 @@ public class Dealer implements Runnable {
                 }
             }
         }
+        // if there is no legal set on the table
+        List<Integer> cards = new ArrayList<>();
+        Collections.addAll(cards, table.slotToCard);
+        boolean legalSetExists = utilimpl.findSets(cards, 1).size() > 0;
+        if(!legalSetExists){
+            removeAllCardsFromTable();
+            placeCardsOnTable();
+        }
+
         // notify all the players
     }
 
@@ -164,7 +166,8 @@ public class Dealer implements Runnable {
         boolean isSet = utilimpl.testSet(cards);
         if(isSet){
             p.point();
-            removeCardsFromTable(); // TODO remove the cards of the legal set from the table
+            removeCardsFromTable(cards); // TODO remove the cards of the legal set from the table
+            placeCardsOnTable();
         }
         else
             p.penalty();
