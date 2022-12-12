@@ -29,6 +29,9 @@ public class Table {
      */
     protected final Integer[] cardToSlot; // slot per card (if any)
 
+    private Integer[][] tokens; //tokens[playerId][allTokens]
+    private Integer[] numOfTokens; //represents how many placed tokens each player have
+
     /**
      * Constructor for testing.
      *
@@ -37,10 +40,11 @@ public class Table {
      * @param cardToSlot - mapping between a card and the slot it is in (null if none).
      */
     public Table(Env env, Integer[] slotToCard, Integer[] cardToSlot) {
-
         this.env = env;
         this.slotToCard = slotToCard;
         this.cardToSlot = cardToSlot;
+        this.tokens = new Integer[env.config.players][3]; //max cards per set is 3
+        this.numOfTokens = new Integer[env.config.players];
     }
 
     /**
@@ -49,7 +53,6 @@ public class Table {
      * @param env - the game environment objects.
      */
     public Table(Env env) {
-
         this(env, new Integer[env.config.tableSize], new Integer[env.config.deckSize]);
     }
 
@@ -95,6 +98,7 @@ public class Table {
         slotToCard[slot] = card;
 
         // TODO implement
+        env.ui.placeCard(card,slot);
     }
 
     /**
@@ -107,6 +111,10 @@ public class Table {
         } catch (InterruptedException ignored) {}
 
         // TODO implement
+        int card = slotToCard[slot];
+        slotToCard[slot] = -1;
+        cardToSlot[card] = -1;
+        env.ui.removeCard(slot);
     }
 
     /**
@@ -116,6 +124,16 @@ public class Table {
      */
     public void placeToken(int player, int slot) {
         // TODO implement
+        Integer[] playersAction = tokens[player];
+        int tokenOfPlayer = numOfTokens[player];
+        if (tokenOfPlayer < 3) //add slot to token
+        {
+            playersAction[tokenOfPlayer] = slot;
+            numOfTokens[player]++;
+            tokens[player] = playersAction; //save the changes
+
+            env.ui.placeToken(player,slot);
+        }
     }
 
     /**
@@ -126,6 +144,44 @@ public class Table {
      */
     public boolean removeToken(int player, int slot) {
         // TODO implement
-        return false;
+        Integer[] playersAction = tokens[player];
+        int tokenOfPlayer = numOfTokens[player];
+        boolean isRemoved = false;
+
+        for (int i = 0; i < tokenOfPlayer-1; i++)
+        {
+            if (!isRemoved) {
+                if (playersAction[i] == slot) //here should delete the slot
+                {
+                    playersAction[i] = playersAction[i+1];
+                    isRemoved = true;
+                }
+            }
+            else{
+                playersAction[i] = playersAction[i+1];
+            }
+        }
+
+        playersAction[tokenOfPlayer-1] = -1; //not really necessary but to be sure
+        numOfTokens[player]--;
+        tokens[player] = playersAction;
+
+        env.ui.removeToken(player,slot);
+        return true;
+    }
+
+    //checks if we placed token, if so then removes, else, puts the token
+    public void makeAction(int player, int slot)
+    {
+        Integer[] playerTokens = this.tokens[player];
+        for (Integer playerToken : playerTokens)
+            if (playerToken == slot) { //remove token
+                removeToken(player, slot);
+                return;
+            }
+
+        //add token
+        placeToken(player,slot);
+
     }
 }

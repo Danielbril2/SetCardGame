@@ -1,5 +1,6 @@
 package bguspl.set.ex;
 
+import java.util.*;
 import java.util.logging.Level;
 
 import bguspl.set.Env;
@@ -52,6 +53,8 @@ public class Player implements Runnable {
      */
     private int score;
 
+    private Queue<Integer> actionQueue;
+
     /**
      * The class constructor.
      *
@@ -66,6 +69,7 @@ public class Player implements Runnable {
         this.table = table;
         this.id = id;
         this.human = human;
+        this.actionQueue = new LinkedList<>();
     }
 
     /**
@@ -78,7 +82,13 @@ public class Player implements Runnable {
         if (!human) createArtificialIntelligence();
 
         while (!terminate) {
-            // TODO implement main player loop
+            if (actionQueue.size() > 0)
+            {
+                int action = actionQueue.poll();
+                //implement action
+                //check if we already placed token, if yes so delete it, else place
+                table.makeAction(id,action);
+            }
         }
         if (!human) try { aiThread.join(); } catch (InterruptedException ignored) {}
         env.logger.log(Level.INFO, "Thread " + Thread.currentThread().getName() + " terminated.");
@@ -92,12 +102,14 @@ public class Player implements Runnable {
         // note: this is a very very smart AI (!)
         aiThread = new Thread(() -> {
             env.logger.log(Level.INFO, "Thread " + Thread.currentThread().getName() + " starting.");
+
             while (!terminate) {
                 // TODO implement player key press simulator
                 try {
                     synchronized (this) { wait(); }
                 } catch (InterruptedException ignored) {}
             }
+
             env.logger.log(Level.INFO, "Thread " + Thread.currentThread().getName() + " terminated.");
         }, "computer-" + id);
         aiThread.start();
@@ -117,6 +129,8 @@ public class Player implements Runnable {
      */
     public void keyPressed(int slot) {
         // TODO implement
+        if (actionQueue.size() < 3)
+            actionQueue.add(slot);
     }
 
     /**
