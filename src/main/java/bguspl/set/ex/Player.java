@@ -104,7 +104,11 @@ public class Player implements Runnable {
             env.logger.log(Level.INFO, "Thread " + Thread.currentThread().getName() + " starting.");
 
             while (!terminate) {
-                // TODO implement player key press simulator
+                //need to generate random number between 0-11
+                Random rand = new Random();
+                int slot = rand.nextInt(12);
+                keyPressed(slot);
+
                 try {
                     synchronized (this) { wait(); }
                 } catch (InterruptedException ignored) {}
