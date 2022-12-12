@@ -189,7 +189,8 @@ public class Table {
     {
         Integer[] playerTokens = tokens[player];
         int[] res = new int[3];
-
+        for (int i = 0; i < playerTokens.length; i++)
+            res[i] = slotToCard[playerTokens[i]];
 
         return res;
     }

@@ -95,7 +95,7 @@ public class Player implements Runnable {
                 if (hasSet)
                 {
                     int[] cards = table.getPlayerCards(id);
-                    //dealer.checkIfSet(cards);
+                    dealer.checkIfSet(id, cards);
                 }
 
             }
