@@ -42,12 +42,15 @@ public class Dealer implements Runnable {
      */
     private long reshuffleTime = 60000; // one minute
 
+    private Thread[] playerThreads;
+
     public Dealer(Env env, Table table, Player[] players) {
         this.env = env;
         this.table = table;
         this.players = players;
         deck = IntStream.range(0, env.config.deckSize).boxed().collect(Collectors.toList());
         utilimpl = new UtilImpl(env.config);
+        playerThreads = new Thread[env.config.players];
     }
 
     /**
@@ -87,6 +90,10 @@ public class Dealer implements Runnable {
      */
     public void terminate() {
         // TODO implement
+        terminate = true;
+        //need to also terminate all players
+        for (Player p: players)
+            p.terminate();
     }
 
     /**
@@ -191,6 +198,7 @@ public class Dealer implements Runnable {
         for(int i = 0; i < winners.length; i++)
             winners[i] = winnersList.remove(0).id;
         env.ui.announceWinner(winners);
+        terminate();
     }
 
     private void CreatePlayersThreads()
@@ -206,6 +214,7 @@ public class Dealer implements Runnable {
                 player = new Thread(players[i], name);
             }
 
+            playerThreads[i] = player;
             player.start();
         }
     }
