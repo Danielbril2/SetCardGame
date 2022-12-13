@@ -134,7 +134,8 @@ public class Dealer implements Runnable {
             placeCardsOnTable();
         }
 
-        // notify all the players
+        // notify all the players that they can return playing
+        notifyAll();
     }
 
     private void shuffleCards(){
@@ -158,17 +159,23 @@ public class Dealer implements Runnable {
     /**
      * Returns all the cards from the table to the deck.
      */
-    private void removeAllCardsFromTable() {
+    private void removeAllCardsFromTable(){
+
+        for (Thread p: playerThreads) { //do wait to all players
+            try {p.wait();} //can be error?
+            catch (InterruptedException ignored){}
+        }
         env.ui.removeTokens();
         // adds the cards from the table to the deck and resets the arrays
         for(int i = 0; i < table.slotToCard.length; i++){
             deck.add(table.slotToCard[i]);
             table.removeCard(i);
         }
-        // do wait for the players
     }
 
+    //should be synchorinzed, two players cannot access same function in the same time
     public void checkIfSet(int id, int[] cards){
+        //or maybe add to action queue and just than implement to prevent locks?
         Player p = players[id];
         boolean isSet = utilimpl.testSet(cards);
         if(isSet){
@@ -201,11 +208,9 @@ public class Dealer implements Runnable {
         terminate();
     }
 
-    private void CreatePlayersThreads()
-    {
+    private void CreatePlayersThreads(){
         String[] names = env.config.playerNames;
-        for (int i = 0; i < players.length; i++)
-        {
+        for (int i = 0; i < players.length; i++) {
             Thread player;
             if (i < names.length)
                 player = new Thread(players[i], names[i]);
@@ -216,6 +221,10 @@ public class Dealer implements Runnable {
 
             playerThreads[i] = player;
             player.start();
+            try {player.wait();
+            } catch (InterruptedException ignore) {
+                env.logger.log(Level.WARNING,"player cannot wait until cards dealt");
+            }
+        }
         }
     }
-}
