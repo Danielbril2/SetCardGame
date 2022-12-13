@@ -198,7 +198,14 @@ public class Dealer implements Runnable {
         String[] names = env.config.playerNames;
         for (int i = 0; i < players.length; i++)
         {
-            Thread player = new Thread(players[i],names[i]);
+            Thread player;
+            if (i < names.length)
+                player = new Thread(players[i], names[i]);
+            else {
+                String name = "PLAYER " + Integer.toString(i);
+                player = new Thread(players[i], name);
+            }
+
             player.start();
         }
     }
