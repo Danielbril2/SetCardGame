@@ -40,7 +40,9 @@ public class Dealer implements Runnable {
     /**
      * The time when the dealer needs to reshuffle the deck due to turn timeout.
      */
-    private long reshuffleTime = 60000; // one minute
+    private long reshuffleTime = Integer.MAX_VALUE; // will change before the time loop
+
+    private long sleepTime; // the time (in milliseconds) that the dealer need to sleep
 
     private Thread[] playerThreads;
 
@@ -51,6 +53,7 @@ public class Dealer implements Runnable {
         deck = IntStream.range(0, env.config.deckSize).boxed().collect(Collectors.toList());
         utilimpl = new UtilImpl(env.config);
         playerThreads = new Thread[env.config.players];
+        sleepTime = 0;
     }
 
     /**
@@ -77,6 +80,7 @@ public class Dealer implements Runnable {
      * The inner loop of the dealer thread that runs as long as the countdown did not time out.
      */
     private void timerLoop() {
+        reshuffleTime = System.currentTimeMillis() + env.config.turnTimeoutMillis;
         while (!terminate && System.currentTimeMillis() < reshuffleTime) {
             sleepUntilWokenOrTimeout();
             updateTimerDisplay(false);
@@ -111,6 +115,8 @@ public class Dealer implements Runnable {
     private void removeCardsFromTable(int[] cards) {
         // TODO now we need to check if a player has declared a set and remove the cards of the set
         // ללכת למערך במקום של הקלף ולהוריד מהמקום את הקלף גם במערך וגם בui
+
+
     }
 
     /**
@@ -153,7 +159,17 @@ public class Dealer implements Runnable {
      * Reset and/or update the countdown and the countdown display.
      */
     private void updateTimerDisplay(boolean reset) {
-        // TODO implement
+        if(reset){
+            sleepTime = 1000;
+            env.ui.setCountdown(env.config.turnTimeoutMillis, false);
+            reshuffleTime = System.currentTimeMillis() + env.config.turnTimeoutMillis;
+        }
+        else if(reshuffleTime - System.currentTimeMillis() < 10000){
+            sleepTime = 10;
+            env.ui.setCountdown(reshuffleTime - System.currentTimeMillis(), true);
+        }
+        else
+            env.ui.setCountdown(reshuffleTime - System.currentTimeMillis(), false);
     }
 
     /**
