@@ -113,10 +113,17 @@ public class Dealer implements Runnable {
      * Checks cards should be removed from the table and removes them.
      */
     private void removeCardsFromTable(int[] cards) {
-        // TODO now we need to check if a player has declared a set and remove the cards of the set
-        // ללכת למערך במקום של הקלף ולהוריד מהמקום את הקלף גם במערך וגם בui
-
-
+        for (Thread p: playerThreads) { //do wait to all players
+            try { // can be error?
+                p.wait();
+            }
+            catch (InterruptedException ignored) {
+            }
+        }
+        for(int cardId: cards) { // remove the cards of the set from the table and the deck
+            int slot = table.cardToSlot[cardId];
+            table.removeCard(slot);
+        }
     }
 
     /**
@@ -152,7 +159,8 @@ public class Dealer implements Runnable {
      * Sleep for a fixed amount of time or until the thread is awakened for some purpose.
      */
     private void sleepUntilWokenOrTimeout() {
-        // TODO implement
+        try{Thread.sleep(sleepTime);} // TODO should be the dealer thread
+        catch (InterruptedException ignored){}
     }
 
     /**
@@ -161,11 +169,13 @@ public class Dealer implements Runnable {
     private void updateTimerDisplay(boolean reset) {
         if(reset){
             sleepTime = 1000;
+            sleepUntilWokenOrTimeout();
             env.ui.setCountdown(env.config.turnTimeoutMillis, false);
             reshuffleTime = System.currentTimeMillis() + env.config.turnTimeoutMillis;
         }
         else if(reshuffleTime - System.currentTimeMillis() < 10000){
             sleepTime = 10;
+            sleepUntilWokenOrTimeout();
             env.ui.setCountdown(reshuffleTime - System.currentTimeMillis(), true);
         }
         else
@@ -176,7 +186,6 @@ public class Dealer implements Runnable {
      * Returns all the cards from the table to the deck.
      */
     private void removeAllCardsFromTable(){
-
         for (Thread p: playerThreads) { //do wait to all players
             try {p.wait();} //can be error?
             catch (InterruptedException ignored){}
@@ -189,7 +198,7 @@ public class Dealer implements Runnable {
         }
     }
 
-    //should be synchorinzed, two players cannot access same function in the same time
+    // TODO should be synchronized, two players cannot access same function in the same time
     public void checkIfSet(int id, int[] cards){
         //or maybe add to action queue and just than implement to prevent locks?
         Player p = players[id];
