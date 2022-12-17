@@ -113,7 +113,7 @@ public class Dealer implements Runnable {
      * Checks cards should be removed from the table and removes them.
      */
     private void removeCardsFromTable(int[] cards) {
-        for (Thread p: playerThreads) { //do wait to all players
+        for (Thread p: playerThreads) { // do wait to all players
             try { // can be error?
                 p.wait();
             }
