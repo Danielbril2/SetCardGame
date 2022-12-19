@@ -1,6 +1,7 @@
 package bguspl.set.ex;
 
 import java.util.*;
+import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.Random;
 
@@ -56,6 +57,7 @@ public class Player implements Runnable {
 
     private Queue<Integer> actionQueue;
     private Dealer dealer;
+    private Semaphore sem;
 
     /**
      * The class constructor.
@@ -90,14 +92,16 @@ public class Player implements Runnable {
                 int action = actionQueue.poll();
                 //implement action
                 table.makeAction(id,action);
-                //ask table if we has 3 tokens
+                //ask table if we have 3 tokens
                 boolean hasSet = table.isCheck(id);
-                if (hasSet)
-                {
+                if (hasSet) {
                     int[] cards = table.getPlayerCards(id);
-                    dealer.checkIfSet(id, cards);
+                    try { //manages that only one player can go to the dealer each time
+                        sem.acquire();
+                        dealer.checkIfSet(id, cards);
+                    }
+                    catch (InterruptedException ignored) {}
                 }
-
             }
         }
         if (!human) try { aiThread.join(); } catch (InterruptedException ignored) {}
@@ -184,5 +188,10 @@ public class Player implements Runnable {
 
     public int getScore() {
         return score;
+    }
+
+    public void setSemaphore(Semaphore sem)
+    {
+        this.sem = sem;
     }
 }

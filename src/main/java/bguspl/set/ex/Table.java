@@ -106,7 +106,7 @@ public class Table {
      */
     public void removeCard(int slot) {
         try {
-            Thread.sleep(env.config.tableDelayMillis);
+            Thread.sleep(env.config.tableDelayMillis); //do we need this?
         } catch (InterruptedException ignored) {}
 
         // TODO implement

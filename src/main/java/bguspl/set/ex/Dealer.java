@@ -6,6 +6,7 @@ import bguspl.set.UtilImpl;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -45,6 +46,7 @@ public class Dealer implements Runnable {
     private long sleepTime; // the time (in milliseconds) that the dealer need to sleep
 
     private Thread[] playerThreads;
+    private Semaphore sem;
 
     public Dealer(Env env, Table table, Player[] players) {
         this.env = env;
@@ -54,6 +56,7 @@ public class Dealer implements Runnable {
         utilimpl = new UtilImpl(env.config);
         playerThreads = new Thread[env.config.players];
         sleepTime = 0;
+        sem = new Semaphore(1); //we only want one player to access dealer each time
     }
 
     /**
@@ -67,8 +70,8 @@ public class Dealer implements Runnable {
 
         while (!shouldFinish()) {
             placeCardsOnTable();
-            timerLoop();
-            updateTimerDisplay(false);
+            timerLoop(); //for one minute
+            updateTimerDisplay(true); //reset after one minute
             removeAllCardsFromTable();
             shuffleCards();
         }
@@ -82,10 +85,10 @@ public class Dealer implements Runnable {
     private void timerLoop() {
         reshuffleTime = System.currentTimeMillis() + env.config.turnTimeoutMillis;
         while (!terminate && System.currentTimeMillis() < reshuffleTime) {
-            sleepUntilWokenOrTimeout();
-            updateTimerDisplay(false);
-//            removeCardsFromTable();
-//            placeCardsOnTable();
+            sleepUntilWokenOrTimeout(); //basically sleep for a second
+            updateTimerDisplay(false); //need to change function - check if need to update seconds
+            //check if there are queus that demand action
+
         }
     }
 
@@ -113,7 +116,7 @@ public class Dealer implements Runnable {
      * Checks cards should be removed from the table and removes them.
      */
     private void removeCardsFromTable(int[] cards) {
-        for (Thread p: playerThreads) { // do wait to all players
+        for (Thread p: playerThreads) { //do wait to all players
             try { // can be error?
                 p.wait();
             }
@@ -130,12 +133,11 @@ public class Dealer implements Runnable {
      * Check if any cards can be removed from the deck and placed on the table.
      */
     private void placeCardsOnTable() {
-        if (deck.size() >= env.config.tableSize - table.countCards()) {
-            if (table.countCards() < env.config.tableSize) {
-                for (int i = 0; i < table.slotToCard.length; i++) {
-                    if (table.slotToCard[i] == null)
-                        table.placeCard(deck.remove(0), i);
-                }
+        if (table.countCards() < env.config.tableSize &&
+                deck.size() >= env.config.tableSize - table.countCards()) {
+            for (int i = 0; i < table.slotToCard.length; i++) {
+                if (table.slotToCard[i] == null)
+                    table.placeCard(deck.remove(0), i);
             }
         }
         // if there is no legal set on the table
@@ -168,7 +170,7 @@ public class Dealer implements Runnable {
      */
     private void updateTimerDisplay(boolean reset) {
         if(reset){
-            sleepTime = 1000;
+            sleepTime = 1000; //one second
             sleepUntilWokenOrTimeout();
             env.ui.setCountdown(env.config.turnTimeoutMillis, false);
             reshuffleTime = System.currentTimeMillis() + env.config.turnTimeoutMillis;
@@ -186,8 +188,8 @@ public class Dealer implements Runnable {
      * Returns all the cards from the table to the deck.
      */
     private void removeAllCardsFromTable(){
-        for (Thread p: playerThreads) { //do wait to all players
-            try {p.wait();} //can be error?
+        for (Thread p: playerThreads) { //all players should wait while there are no cards
+            try {p.wait();}
             catch (InterruptedException ignored){}
         }
         env.ui.removeTokens();
@@ -199,9 +201,10 @@ public class Dealer implements Runnable {
     }
 
     // TODO should be synchronized, two players cannot access same function in the same time
-    public void checkIfSet(int id, int[] cards){
-        //or maybe add to action queue and just than implement to prevent locks?
-        Player p = players[id];
+    //maybe not, added semaphore
+    public void checkIfSet(int playerId, int[] cards){
+        //or maybe add to action queue and juster than implement to prevent locks?
+        Player p = players[playerId];
         boolean isSet = utilimpl.testSet(cards);
         if(isSet){
             p.point();
@@ -235,6 +238,8 @@ public class Dealer implements Runnable {
 
     private void CreatePlayersThreads(){
         String[] names = env.config.playerNames;
+        for (Player p : players) p.setSemaphore(this.sem); //giving each player the same semaphore
+
         for (int i = 0; i < players.length; i++) {
             Thread player;
             if (i < names.length)
