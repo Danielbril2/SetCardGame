@@ -87,7 +87,7 @@ public class Dealer implements Runnable {
         reshuffleTime = System.currentTimeMillis() + env.config.turnTimeoutMillis;
         while (!terminate && System.currentTimeMillis() < reshuffleTime) {
             sleepUntilWokenOrTimeout(); //basically sleep for a second
-            updateTimerDisplay(false); //need to change function - check if need to update seconds
+            updateTimerDisplay(false); //need to change function - check if we need to update seconds
         }
     }
 
@@ -274,7 +274,7 @@ public class Dealer implements Runnable {
             if (i < names.length)
                 player = new Thread(players[i], names[i]);
             else {
-                String name = "PLAYER " + Integer.toString(i);
+                String name = "PLAYER " + i;
                 player = new Thread(players[i], name);
             }
 

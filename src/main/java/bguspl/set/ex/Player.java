@@ -180,6 +180,8 @@ public class Player implements Runnable {
     public void penalty() {
         long startTime = System.currentTimeMillis();
         long remainTime = System.currentTimeMillis() - startTime;
+        //we are in a loop for a period of time, so we cannot do anything
+        //not sure if it works, maybe need to sleep for some time
         while (remainTime < env.config.penaltyFreezeMillis)
         {
             env.ui.setFreeze(this.id,remainTime);
