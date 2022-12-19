@@ -43,10 +43,11 @@ public class Dealer implements Runnable {
      */
     private long reshuffleTime = Integer.MAX_VALUE; // will change before the time loop
 
-    private long sleepTime; // the time (in milliseconds) that the dealer need to sleep
+    private long sleepTime = 100; // the time (in milliseconds) that the dealer need to sleep
 
-    private Thread[] playerThreads;
-    private Semaphore sem;
+    private final Thread[] playerThreads;
+    private final Semaphore sem;
+    private long lastUpdate; //the last time we updated the time
 
     public Dealer(Env env, Table table, Player[] players) {
         this.env = env;
@@ -55,8 +56,8 @@ public class Dealer implements Runnable {
         deck = IntStream.range(0, env.config.deckSize).boxed().collect(Collectors.toList());
         utilimpl = new UtilImpl(env.config);
         playerThreads = new Thread[env.config.players];
-        sleepTime = 0;
         sem = new Semaphore(1); //we only want one player to access dealer each time
+        lastUpdate = 0;
     }
 
     /**
@@ -159,7 +160,7 @@ public class Dealer implements Runnable {
      * Sleep for a fixed amount of time or until the thread is awakened for some purpose.
      */
     private void sleepUntilWokenOrTimeout() {
-        try{Thread.sleep(sleepTime);} // TODO should be the dealer thread
+        try{Thread.sleep(sleepTime);}
         catch (InterruptedException ignored){}
     }
 
@@ -167,6 +168,34 @@ public class Dealer implements Runnable {
      * Reset and/or update the countdown and the countdown display.
      */
     private void updateTimerDisplay(boolean reset) {
+        if (reset)
+        {
+            int MINUTE = 60000;
+            env.ui.setCountdown(MINUTE,false);
+        }
+        else
+        {
+            //check if a second has passed since last update, if yes that update countdown
+            //else, change sleepTime to the difference
+
+            int SECOND = 1000;
+            if (System.currentTimeMillis() - lastUpdate < SECOND) //second haven't passed yet
+                sleepTime = SECOND - (System.currentTimeMillis() - lastUpdate);
+            else //need to update after second have passed
+            {
+                long timeLeft = reshuffleTime - System.currentTimeMillis();
+                boolean isRed = timeLeft < 10*SECOND;
+                env.ui.setCountdown(timeLeft, isRed);
+
+                sleepTime = SECOND;
+                lastUpdate = System.currentTimeMillis();
+            }
+        }
+
+        lastUpdate = System.currentTimeMillis();
+
+
+        /*
         if(reset){
             sleepTime = 1000; //one second
             sleepUntilWokenOrTimeout();
@@ -180,6 +209,8 @@ public class Dealer implements Runnable {
         }
         else
             env.ui.setCountdown(reshuffleTime - System.currentTimeMillis(), false);
+
+         */
     }
 
     /**
