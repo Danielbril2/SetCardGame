@@ -101,6 +101,7 @@ public class Player implements Runnable {
                         dealer.checkIfSet(id, cards);
                     }
                     catch (InterruptedException ignored) {}
+                    sem.release();
                 }
             }
         }

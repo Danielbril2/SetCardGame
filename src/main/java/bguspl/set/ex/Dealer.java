@@ -87,8 +87,6 @@ public class Dealer implements Runnable {
         while (!terminate && System.currentTimeMillis() < reshuffleTime) {
             sleepUntilWokenOrTimeout(); //basically sleep for a second
             updateTimerDisplay(false); //need to change function - check if need to update seconds
-            //check if there are queus that demand action
-
         }
     }
 
