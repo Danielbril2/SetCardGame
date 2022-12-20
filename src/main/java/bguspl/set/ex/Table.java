@@ -5,6 +5,7 @@ import bguspl.set.Env;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 /**
  * This class contains the data that is visible to the player.
@@ -28,7 +29,7 @@ public class Table {
      */
     protected final Integer[] cardToSlot; // slot per card (if any)
 
-    private Integer[][] tokens; //tokens[playerId][allTokens]
+    private Integer[][] tokens; //tokens[playerId][slot1,slot2, slot3]
     private Integer[] numOfTokens; //represents how many placed tokens each player have
 
     /**
@@ -42,8 +43,7 @@ public class Table {
         this.env = env;
         this.slotToCard = slotToCard;
         this.cardToSlot = cardToSlot;
-        this.tokens = new Integer[env.config.players][3]; //max cards per set is 3
-        this.numOfTokens = new Integer[env.config.players];
+        initializeData();
     }
 
     /**
@@ -122,14 +122,11 @@ public class Table {
      * @param slot   - the slot on which to place the token.
      */
     public void placeToken(int player, int slot) {
-        // TODO implement
-        Integer[] playersAction = tokens[player];
         int tokenOfPlayer = numOfTokens[player];
         if (tokenOfPlayer < 3) //add slot to token
         {
-            playersAction[tokenOfPlayer] = slot;
+            tokens[player][tokenOfPlayer] = slot;
             numOfTokens[player]++;
-            tokens[player] = playersAction; //save the changes
 
             env.ui.placeToken(player,slot);
         }
@@ -142,7 +139,6 @@ public class Table {
      * @return       - true iff a token was successfully removed.
      */
     public boolean removeToken(int player, int slot) {
-        // TODO implement
         Integer[] playersAction = tokens[player];
         int tokenOfPlayer = numOfTokens[player];
         boolean isRemoved = false;
@@ -171,11 +167,15 @@ public class Table {
     public void makeAction(int player, int slot)
     {
         Integer[] playerTokens = this.tokens[player];
-        for (Integer playerToken : playerTokens)
-            if (playerToken == slot) { // remove token
-                removeToken(player, slot);
-                return;
-            }
+        try {
+            for (Integer playerToken : playerTokens)
+                if (playerToken == slot) { // remove token
+                    removeToken(player, slot);
+                    return;
+                }
+        } catch (Exception ignored){
+            env.logger.log(Level.WARNING, ignored.toString());
+        }
         //add token
         placeToken(player,slot);
     }
@@ -193,5 +193,17 @@ public class Table {
             res[i] = slotToCard[playerTokens[i]];
 
         return res;
+    }
+
+    private void initializeData() {
+        this.tokens = new Integer[env.config.players][env.config.featureCount];
+        this.numOfTokens = new Integer[env.config.players];
+
+        for (Integer[] token: tokens)
+        {
+            Arrays.fill(token,-1);
+        }
+
+        Arrays.fill(numOfTokens,0);
     }
 }

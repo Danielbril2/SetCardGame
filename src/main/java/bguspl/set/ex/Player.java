@@ -98,7 +98,6 @@ public class Player implements Runnable {
         if (!human) createArtificialIntelligence();
 
         while (!terminate) {
-            env.logger.log(Level.INFO, "started while terminated in player " + Thread.currentThread().getName());
             if (actionQueue.size() > 0)
             {
                 int action = actionQueue.poll();
