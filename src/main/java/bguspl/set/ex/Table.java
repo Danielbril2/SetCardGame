@@ -164,32 +164,27 @@ public class Table {
     }
 
     // checks if we placed token, if so then removes, else, puts the token
-    public void makeAction(int player, int slot)
-    {
+    public void makeAction(int player, int slot) {
         Integer[] playerTokens = this.tokens[player];
-        try {
-            for (Integer playerToken : playerTokens)
-                if (playerToken == slot) { // remove token
-                    removeToken(player, slot);
-                    return;
-                }
-        } catch (Exception ignored){
-            env.logger.log(Level.WARNING, ignored.toString());
-        }
+        for (Integer playerToken : playerTokens)
+            if (playerToken == slot) { // remove token
+                removeToken(player, slot);
+                return;
+            }
         //add token
-        placeToken(player,slot);
+        placeToken(player, slot);
     }
 
     public boolean isCheck(int player)
     {
-        return tokens[player].length == 3; //returns true if we has 3 tokens
+        return numOfTokens[player] == 3; //returns true if we have 3 tokens
     }
 
     public int[] getPlayerCards(int player)
     {
         Integer[] playerTokens = tokens[player];
         int[] res = new int[3];
-        for (int i = 0; i < playerTokens.length; i++)
+        for (int i = 0; i < numOfTokens[i]; i++)
             res[i] = slotToCard[playerTokens[i]];
 
         return res;

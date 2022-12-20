@@ -106,10 +106,13 @@ public class Player implements Runnable {
                 //ask table if we have 3 tokens
                 boolean hasSet = table.isCheck(id);
                 if (hasSet) {
+                    env.logger.log(Level.INFO,"we have 3 tokens");
                     int[] cards = table.getPlayerCards(id);
                     try { //manages that only one player can go to the dealer each time
                         sem.acquire();
+                        env.logger.log(Level.INFO,"acquired the semaphore ");
                         dealer.checkIfSet(id, cards);
+                        env.logger.log(Level.INFO,"talked to dealer from player side ");
                     }
                     catch (InterruptedException ignored) {}
                     sem.release();
