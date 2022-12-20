@@ -84,6 +84,11 @@ public class Player implements Runnable {
     public void run() {
         playerThread = Thread.currentThread();
         env.logger.log(Level.INFO, "Thread " + Thread.currentThread().getName() + "starting.");
+        try {
+            env.logger.log(Level.INFO, Thread.currentThread().getName() + "waiting ");
+            playerThread.wait(); //waiting in the beginning until cards are dealt
+        } catch (InterruptedException ingored) {}
+
         if (!human) createArtificialIntelligence();
 
         while (!terminate) {
@@ -196,5 +201,14 @@ public class Player implements Runnable {
     public void setSemaphore(Semaphore sem)
     {
         this.sem = sem;
+    }
+
+    public void Wait()
+    {
+        try {
+            playerThread.wait();
+        }catch(Exception ignored) {
+            env.logger.log(Level.WARNING, ignored.toString());
+        }
     }
 }
