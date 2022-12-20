@@ -48,7 +48,7 @@ public class Dealer implements Runnable {
     private final Thread[] playerThreads;
     private final Semaphore sem;
     private long lastUpdate; //the last time we updated the time
-    private Object waitForCards;
+    private final Object waitForCards;
 
     public Dealer(Env env, Table table, Player[] players) {
         this.env = env;
@@ -151,14 +151,12 @@ public class Dealer implements Runnable {
             placeCardsOnTable();
         }
 
-        env.logger.log(Level.INFO, "placed all cards");
         // notify all the players that they can return playing
         try {
-            waitForCards.notifyAll();
-            //synchronized (waitForCards){notifyAll();}
+            synchronized (waitForCards) {waitForCards.notifyAll();}
+            env.logger.log(Level.INFO, "succesfully placed and notified all players");
         }
-        catch (Exception e) {env.logger.log(Level.WARNING, e.toString());}
-        env.logger.log(Level.INFO, "notifyed everyone");
+        catch (Exception ignored) {}
     }
 
     private void shuffleCards() {

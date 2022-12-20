@@ -86,8 +86,10 @@ public class Player implements Runnable {
         playerThread = Thread.currentThread();
         env.logger.log(Level.INFO, "Thread " + Thread.currentThread().getName() + "starting.");
         try {
-            env.logger.log(Level.INFO, Thread.currentThread().getName() + " waiting ");
-            waitForCards.wait(); //waiting in the beginning until cards are dealt
+            synchronized (waitForCards) {
+                waitForCards.wait(); //waiting in the beginning until cards are dealt
+            }
+                env.logger.log(Level.INFO, Thread.currentThread().getName() + " waiting ");
         }catch (Exception ingored) {
             env.logger.log(Level.WARNING,ingored.toString());
         }
