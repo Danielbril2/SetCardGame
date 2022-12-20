@@ -48,6 +48,7 @@ public class Dealer implements Runnable {
     private final Thread[] playerThreads;
     private final Semaphore sem;
     private long lastUpdate; //the last time we updated the time
+    private Object waitForCards;
 
     public Dealer(Env env, Table table, Player[] players) {
         this.env = env;
@@ -58,6 +59,7 @@ public class Dealer implements Runnable {
         playerThreads = new Thread[env.config.players];
         sem = new Semaphore(1); //we only want one player to access dealer each time
         lastUpdate = 0;
+        waitForCards = new Object();
     }
 
     /**
@@ -149,8 +151,14 @@ public class Dealer implements Runnable {
             placeCardsOnTable();
         }
 
+        env.logger.log(Level.INFO, "placed all cards");
         // notify all the players that they can return playing
-        notifyAll();
+        try {
+            waitForCards.notifyAll();
+            //synchronized (waitForCards){notifyAll();}
+        }
+        catch (Exception e) {env.logger.log(Level.WARNING, e.toString());}
+        env.logger.log(Level.INFO, "notifyed everyone");
     }
 
     private void shuffleCards() {
@@ -267,9 +275,12 @@ public class Dealer implements Runnable {
     }
 
     private void CreatePlayersThreads() {
-        env.logger.log(Level.INFO, "start of function ");
         String[] names = env.config.playerNames;
-        for (Player p : players) p.setSemaphore(this.sem); //giving each player the same semaphore
+        for (Player p : players)
+        {
+            p.setSemaphore(this.sem); //giving each player the same semaphore
+            p.setLockObject(this.waitForCards);
+        }
 
         for (int i = 0; i < players.length; i++) {
             Thread player;
@@ -282,10 +293,6 @@ public class Dealer implements Runnable {
 
             playerThreads[i] = player;
             player.start();
-            env.logger.log(Level.INFO, player.getName() + "started ");
-            //players[i].Wait(); //telling the player to wait until the cards are dealt
-
         }
-        env.logger.log(Level.INFO, "end of function");
     }
 }

@@ -1,0 +1,26 @@
+[2022-12-20 11:46:18] [INFO   ] cannot read configuration file config.properties trying from resources.
+[2022-12-20 11:46:18] [INFO   ] configuration file was loaded from resources directory.
+[2022-12-20 11:46:18] [INFO   ] Thread dealer starting.
+[2022-12-20 11:46:18] [INFO   ] loading players
+[2022-12-20 11:46:18] [INFO   ] start of function 
+[2022-12-20 11:46:18] [INFO   ] Menistarted 
+[2022-12-20 11:46:18] [INFO   ] Marinastarted 
+[2022-12-20 11:46:18] [INFO   ] end of function
+[2022-12-20 11:46:18] [INFO   ] loaded players succesfuly
+[2022-12-20 11:46:18] [INFO   ] Thread Menistarting.
+[2022-12-20 11:46:18] [INFO   ] Thread Marinastarting.
+[2022-12-20 11:46:18] [INFO   ] Meniwaiting 
+[2022-12-20 11:46:18] [INFO   ] Marinawaiting 
+[2022-12-20 11:46:18] [SEVERE ] placing card 0 in slot 0
+[2022-12-20 11:46:18] [SEVERE ] placing card 1 in slot 1
+[2022-12-20 11:46:18] [SEVERE ] placing card 2 in slot 2
+[2022-12-20 11:46:19] [SEVERE ] placing card 3 in slot 3
+[2022-12-20 11:46:19] [SEVERE ] placing card 4 in slot 4
+[2022-12-20 11:46:19] [SEVERE ] placing card 5 in slot 5
+[2022-12-20 11:46:19] [SEVERE ] placing card 6 in slot 6
+[2022-12-20 11:46:19] [SEVERE ] placing card 7 in slot 7
+[2022-12-20 11:46:19] [SEVERE ] placing card 8 in slot 8
+[2022-12-20 11:46:19] [SEVERE ] placing card 9 in slot 9
+[2022-12-20 11:46:19] [SEVERE ] placing card 10 in slot 10
+[2022-12-20 11:46:19] [SEVERE ] placing card 11 in slot 11
+[2022-12-20 11:46:19] [INFO   ] Thread main terminated.

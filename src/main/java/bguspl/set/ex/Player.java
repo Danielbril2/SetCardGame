@@ -58,6 +58,7 @@ public class Player implements Runnable {
     private Queue<Integer> actionQueue;
     private Dealer dealer;
     private Semaphore sem;
+    private Object waitForCards;
 
     /**
      * The class constructor.
@@ -85,9 +86,11 @@ public class Player implements Runnable {
         playerThread = Thread.currentThread();
         env.logger.log(Level.INFO, "Thread " + Thread.currentThread().getName() + "starting.");
         try {
-            env.logger.log(Level.INFO, Thread.currentThread().getName() + "waiting ");
-            playerThread.wait(); //waiting in the beginning until cards are dealt
-        } catch (InterruptedException ingored) {}
+            env.logger.log(Level.INFO, Thread.currentThread().getName() + " waiting ");
+            waitForCards.wait(); //waiting in the beginning until cards are dealt
+        }catch (Exception ingored) {
+            env.logger.log(Level.WARNING,ingored.toString());
+        }
 
         if (!human) createArtificialIntelligence();
 
@@ -203,12 +206,8 @@ public class Player implements Runnable {
         this.sem = sem;
     }
 
-    public void Wait()
+    public void setLockObject(Object obj)
     {
-        try {
-            playerThread.wait();
-        }catch(Exception ignored) {
-            env.logger.log(Level.WARNING, ignored.toString());
-        }
+        this.waitForCards = obj;
     }
 }
