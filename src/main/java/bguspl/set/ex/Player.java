@@ -59,6 +59,7 @@ public class Player implements Runnable {
     private Dealer dealer;
     private Semaphore sem;
     private Object waitForCards;
+    private boolean isCardDealt;
 
     /**
      * The class constructor.
@@ -76,6 +77,7 @@ public class Player implements Runnable {
         this.human = human;
         this.actionQueue = new LinkedList<>();
         this.dealer = dealer;
+        isCardDealt = false;
     }
 
     /**
@@ -86,17 +88,17 @@ public class Player implements Runnable {
         playerThread = Thread.currentThread();
         env.logger.log(Level.INFO, "Thread " + Thread.currentThread().getName() + "starting.");
         try {
-            synchronized (waitForCards) {
-                waitForCards.wait(); //waiting in the beginning until cards are dealt
+            while (isCardDealt) {
+                synchronized (waitForCards) {
+                    waitForCards.wait(); //waiting in the beginning until cards are dealt
+                }
             }
-                env.logger.log(Level.INFO, Thread.currentThread().getName() + " waiting ");
-        }catch (Exception ingored) {
-            env.logger.log(Level.WARNING,ingored.toString());
-        }
+        }catch (Exception ingored) {}
 
         if (!human) createArtificialIntelligence();
 
         while (!terminate) {
+            env.logger.log(Level.INFO, "started while terminated in player " + Thread.currentThread().getName());
             if (actionQueue.size() > 0)
             {
                 int action = actionQueue.poll();
@@ -159,8 +161,11 @@ public class Player implements Runnable {
      */
     public void keyPressed(int slot) {
         // TODO implement
-        if (actionQueue.size() < 3)
+        env.logger.log(Level.INFO, "key pressed");
+        if (actionQueue.size() < env.config.featureCount) {
             actionQueue.add(slot);
+            env.logger.log(Level.INFO, "added key to queue");
+        }
     }
 
     /**
@@ -211,5 +216,10 @@ public class Player implements Runnable {
     public void setLockObject(Object obj)
     {
         this.waitForCards = obj;
+    }
+
+    public void setIsCardDealt(boolean isCardDealt)
+    {
+        this.isCardDealt = isCardDealt;
     }
 }

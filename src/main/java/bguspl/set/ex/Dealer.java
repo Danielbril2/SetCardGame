@@ -152,9 +152,10 @@ public class Dealer implements Runnable {
         }
 
         // notify all the players that they can return playing
+        for (Player p: players)
+            p.setIsCardDealt(true);
         try {
             synchronized (waitForCards) {waitForCards.notifyAll();}
-            env.logger.log(Level.INFO, "succesfully placed and notified all players");
         }
         catch (Exception ignored) {}
     }
