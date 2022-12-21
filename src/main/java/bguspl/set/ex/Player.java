@@ -86,7 +86,7 @@ public class Player implements Runnable {
     @Override
     public void run() {
         playerThread = Thread.currentThread();
-        env.logger.log(Level.INFO, "Thread " + Thread.currentThread().getName() + "starting.");
+        env.logger.log(Level.INFO, "Thread " + Thread.currentThread().getName() + " starting.");
         PlayerWait(); //waiting until all cards are dealt
 
         if (!human) createArtificialIntelligence();

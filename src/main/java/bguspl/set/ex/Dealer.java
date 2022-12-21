@@ -255,7 +255,6 @@ public class Dealer implements Runnable {
             else {
                 String name = "PLAYER " + i;
                 player = new Thread(players[i], name);
-                env.logger.log(Level.INFO,name + " starting");
             }
 
             player.start();
