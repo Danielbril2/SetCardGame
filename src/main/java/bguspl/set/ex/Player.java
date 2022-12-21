@@ -180,7 +180,6 @@ public class Player implements Runnable {
             freezeTime -= updateTime;
             env.ui.setFreeze(this.id,freezeTime);
         }
-        env.ui.setFreeze(this.id, 0);
     }
 
     /**
@@ -196,7 +195,6 @@ public class Player implements Runnable {
             freezeTime -= updateTime;
             env.ui.setFreeze(this.id,freezeTime);
         }
-        env.ui.setFreeze(this.id, 0);
     }
 
     public int getScore() {

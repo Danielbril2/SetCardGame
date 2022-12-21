@@ -100,12 +100,10 @@ public class Dealer implements Runnable {
      * Called when the game should be terminated due to an external event.
      */
     public void terminate() {
-        // TODO implement
         for (Player p : players)
             p.terminate();
         terminate = true;
         //need to also terminate all players
-        Thread.currentThread().interrupt();
     }
 
     /**
@@ -127,8 +125,10 @@ public class Dealer implements Runnable {
         }
 
         for (int cardId : cards) { // remove the cards of the set from the table and the deck
-            int slot = table.cardToSlot[cardId];
-            table.removeCard(slot);
+            try {
+                int slot = table.cardToSlot[cardId];
+                table.removeCard(slot);
+            } catch (Exception ignored) {}
         }
 
     }
@@ -149,8 +149,10 @@ public class Dealer implements Runnable {
         Collections.addAll(cards, table.slotToCard);
         boolean legalSetExists = utilimpl.findSets(cards, 1).size() > 0;
         if (!legalSetExists) {
-            removeAllCardsFromTable();
-            placeCardsOnTable();
+            try {
+                removeAllCardsFromTable();
+                placeCardsOnTable();
+            } catch(Exception ignored) {}
         }
 
         if (env.config.hints)
@@ -173,10 +175,8 @@ public class Dealer implements Runnable {
      * Sleep for a fixed amount of time or until the thread is awakened for some purpose.
      */
     private void sleepUntilWokenOrTimeout() {
-        try {
-            Thread.sleep(sleepTime);
-        } catch (InterruptedException ignored) {
-        }
+        try {Thread.sleep(sleepTime);
+        } catch (InterruptedException ignored) {}
     }
 
     /**
