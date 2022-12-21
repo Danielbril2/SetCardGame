@@ -122,16 +122,22 @@ public class Player implements Runnable {
         // note: this is a very very smart AI (!)
         aiThread = new Thread(() -> {
             env.logger.log(Level.INFO, "Thread " + Thread.currentThread().getName() + " starting.");
-
             while (!terminate) {
+                try {
+                    while (!isCardDealt) {
+                        synchronized (waitForCards) {
+                            waitForCards.wait(); //waiting in the beginning until cards are dealt
+                        }
+                    }
+                } catch (Exception ignored) {}
+
                 //need to generate random number between 0-11
                 Random rand = new Random();
                 int slot = rand.nextInt(12);
                 keyPressed(slot);
-
-                try {
-                    synchronized (this) { wait(); }
+                try {Thread.sleep(10); //to make it no so fast
                 } catch (InterruptedException ignored) {}
+
             }
 
             env.logger.log(Level.INFO, "Thread " + Thread.currentThread().getName() + " terminated.");
@@ -215,12 +221,12 @@ public class Player implements Runnable {
 
     public void PlayerWait() {
         try {
-            while (isCardDealt) {
+            while (!isCardDealt) {
                 synchronized (waitForCards) {
                     waitForCards.wait(); //waiting in the beginning until cards are dealt
                 }
             }
-        } catch (Exception ingored) {
+        } catch (Exception ignored) {
         }
     }
 }

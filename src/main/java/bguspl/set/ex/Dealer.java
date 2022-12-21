@@ -98,10 +98,10 @@ public class Dealer implements Runnable {
      */
     public void terminate() {
         // TODO implement
-        terminate = true;
-        //need to also terminate all players
         for (Player p : players)
             p.terminate();
+        terminate = true;
+        //need to also terminate all players
         Thread.currentThread().interrupt();
     }
 
