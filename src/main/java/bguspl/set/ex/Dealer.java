@@ -75,10 +75,8 @@ public class Dealer implements Runnable {
             placeCardsOnTable();
             timerLoop(); //for one minute
             updateTimerDisplay(true); //reset after one minute
-            env.logger.log(Level.INFO, "one minute has passed");
             removeAllCardsFromTable();
             shuffleCards();
-            env.logger.log(Level.INFO, "removed cards and shuffled them");
         }
         announceWinners();
         env.logger.log(Level.INFO, "Thread " + Thread.currentThread().getName() + " terminated.");
@@ -184,22 +182,13 @@ public class Dealer implements Runnable {
         } else {
             //check if a second has passed since last update, if yes that update countdown
             //else, change sleepTime to the difference
-
             int SECOND = 1000;
-            if (System.currentTimeMillis() - lastUpdate < SECOND) //second haven't passed yet
-                sleepTime = SECOND - (System.currentTimeMillis() - lastUpdate);
-            else //need to update after second have passed
-            {
-                long timeLeft = reshuffleTime - System.currentTimeMillis();
-                boolean isRed = timeLeft < env.config.turnTimeoutWarningMillis;
-                env.ui.setCountdown(timeLeft, isRed);
-
-                sleepTime = SECOND;
-                lastUpdate = System.currentTimeMillis();
-            }
+            long timeLeft = reshuffleTime - System.currentTimeMillis();
+            boolean isRed = timeLeft < env.config.turnTimeoutWarningMillis;
+            env.ui.setCountdown(timeLeft, isRed);
+            sleepTime = SECOND / 100;
         }
 
-        lastUpdate = System.currentTimeMillis();
     }
 
     /**

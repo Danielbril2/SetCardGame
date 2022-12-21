@@ -166,11 +166,16 @@ public class Player implements Runnable {
      */
     public void point() { //need to add that sleep only for a second
         env.ui.setScore(id, ++score);
-        long freezeTime = env.config.pointFreezeMillis;
-        env.ui.setFreeze(this.id,freezeTime);
-        try {Thread.sleep(freezeTime);}
-        catch (InterruptedException ignored){}
-        env.ui.setFreeze(this.id,0);
+        long freezeTime = env.config.penaltyFreezeMillis;
+        long updateTime = 1000; //second
+        env.ui.setFreeze(this.id, freezeTime);
+        while (freezeTime > 0) {
+            try {Thread.sleep(updateTime);
+            } catch (InterruptedException ignored) {}
+            freezeTime -= updateTime;
+            env.ui.setFreeze(this.id,freezeTime);
+        }
+        env.ui.setFreeze(this.id, 0);
     }
 
     /**
@@ -178,10 +183,15 @@ public class Player implements Runnable {
      */
     public void penalty() {
         long freezeTime = env.config.penaltyFreezeMillis;
-        env.ui.setFreeze(this.id,freezeTime);
-        try {Thread.sleep(freezeTime);}
-        catch (InterruptedException ignored){}
-        env.ui.setFreeze(this.id,0);
+        long updateTime = 1000; //second
+        env.ui.setFreeze(this.id, freezeTime);
+        while (freezeTime > 0) {
+            try {Thread.sleep(updateTime);
+            } catch (InterruptedException ignored) {}
+            freezeTime -= updateTime;
+            env.ui.setFreeze(this.id,freezeTime);
+        }
+        env.ui.setFreeze(this.id, 0);
     }
 
     public int getScore() {
@@ -205,8 +215,6 @@ public class Player implements Runnable {
 
     public void PlayerWait() {
         try {
-            env.logger.log(Level.INFO,"this is player class");
-            env.logger.log(Level.INFO,Thread.currentThread().getName() + " waiting ");
             while (isCardDealt) {
                 synchronized (waitForCards) {
                     waitForCards.wait(); //waiting in the beginning until cards are dealt
