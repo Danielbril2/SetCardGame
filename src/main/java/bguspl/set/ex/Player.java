@@ -94,15 +94,15 @@ public class Player implements Runnable {
         while (!terminate) {
             if (actionQueue.size() > 0)
             {
-                int action = actionQueue.poll();
+                int action = actionQueue.poll(); //slot
                 //implement action
                 table.makeAction(id,action);
                 //ask table if we have 3 tokens
                 boolean hasSet = table.isCheck(id);
                 if (hasSet) {
-                    int[] cards = table.getPlayerCards(id);
                     try { //manages that only one player can go to the dealer each time
                         sem.acquire();
+                        int[] cards = table.getPlayerCards(id);
                         dealer.checkIfSet(id, cards);
                     }
                     catch (InterruptedException ignored) {}
@@ -220,8 +220,8 @@ public class Player implements Runnable {
     }
 
     public void PlayerWait() {
-        try {
-            while (!isCardDealt) {
+        try{
+            while (isCardDealt) {
                 synchronized (waitForCards) {
                     waitForCards.wait(); //waiting in the beginning until cards are dealt
                 }

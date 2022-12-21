@@ -74,8 +74,11 @@ public class Dealer implements Runnable {
         while (!shouldFinish()) {
             placeCardsOnTable();
             timerLoop(); //for one minute
+            env.logger.log(Level.INFO,"starting loop");
             updateTimerDisplay(true); //reset after one minute
+            env.logger.log(Level.INFO,"one minute ended");
             removeAllCardsFromTable();
+            env.logger.log(Level.INFO,"removing cards");
             shuffleCards();
         }
         announceWinners();
