@@ -75,10 +75,13 @@ public class Dealer implements Runnable {
 
         while (!shouldFinish()) {
             placeCardsOnTable();
+            env.logger.log(Level.INFO, "one minute has starting");
             timerLoop(); //for one minute
             updateTimerDisplay(true); //reset after one minute
+            env.logger.log(Level.INFO, "one minute has passed");
             removeAllCardsFromTable();
             shuffleCards();
+            env.logger.log(Level.INFO, "removed cards and shuffled them");
         }
         announceWinners();
         env.logger.log(Level.INFO, "Thread " + Thread.currentThread().getName() + " terminated.");
@@ -104,6 +107,7 @@ public class Dealer implements Runnable {
         //need to also terminate all players
         for (Player p : players)
             p.terminate();
+        Thread.currentThread().interrupt();
     }
 
     /**
@@ -124,17 +128,11 @@ public class Dealer implements Runnable {
             p.PlayerWait();
         }
 
-        for (int card: cards)
-            System.out.println(card);
-
         for (int cardId : cards) { // remove the cards of the set from the table and the deck
-            //System.out.println(cards);
-            env.logger.log(Level.INFO,Integer.toString(cardId));
-            int slot = table.cardToSlot[cardId]; //problem here
+            int slot = table.cardToSlot[cardId];
             table.removeCard(slot);
         }
 
-        env.logger.log(Level.INFO, "succesfully removed cards from table and players are waiting");
     }
 
     /**
@@ -227,13 +225,9 @@ public class Dealer implements Runnable {
         Player p = players[playerId];
         boolean isSet = utilimpl.testSet(cards);
 
-        for (int card: cards)
-            System.out.println(card);
-
-        env.logger.log(Level.INFO, Boolean.toString(isSet));
         if (isSet) {
             p.point();
-            removeCardsFromTable(cards);
+            removeCardsFromTable(cards); //need to also update the tokens
             placeCardsOnTable();
         } else
             p.penalty();

@@ -104,7 +104,6 @@ public class Player implements Runnable {
                     try { //manages that only one player can go to the dealer each time
                         sem.acquire();
                         dealer.checkIfSet(id, cards);
-                        env.logger.log(Level.INFO,"talked to dealer from player side ");
                     }
                     catch (InterruptedException ignored) {}
                     sem.release();
@@ -146,6 +145,7 @@ public class Player implements Runnable {
     public void terminate() {
         // TODO implement
         terminate = true;
+        Thread.currentThread().interrupt();
     }
 
     /**

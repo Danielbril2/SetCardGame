@@ -109,8 +109,19 @@ public class Table {
             Thread.sleep(env.config.tableDelayMillis); //do we need this?
         } catch (InterruptedException ignored) {}
 
-        // TODO implement
+
         int card = slotToCard[slot];
+        //first delete the tokens
+        for (int i = 0; i < tokens.length;i++) //for each player
+        {
+            int playerTokens = numOfTokens[i];
+            for (int j = 0; j < playerTokens; j++) //check all his tokens
+            {
+                if (tokens[i][j] == slot) //if he has a token that will be deleted
+                    removeToken(i,slot);
+            }
+        }
+
         slotToCard[slot] = null;
         cardToSlot[card] = null;
         env.ui.removeCard(slot);
@@ -186,7 +197,6 @@ public class Table {
 
         int[] res = new int[3];
         for (int i = 0; i < numOfTokens[player]; i++) {
-            env.logger.log(Level.INFO, Integer.toString(playerTokens[i]));
             res[i] = slotToCard[playerTokens[i]];
         }
 
