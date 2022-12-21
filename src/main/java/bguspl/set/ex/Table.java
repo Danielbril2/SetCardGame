@@ -183,9 +183,12 @@ public class Table {
     public int[] getPlayerCards(int player)
     {
         Integer[] playerTokens = tokens[player];
+
         int[] res = new int[3];
-        for (int i = 0; i < numOfTokens[i]; i++)
+        for (int i = 0; i < numOfTokens[player]; i++) {
+            env.logger.log(Level.INFO, Integer.toString(playerTokens[i]));
             res[i] = slotToCard[playerTokens[i]];
+        }
 
         return res;
     }

@@ -87,13 +87,7 @@ public class Player implements Runnable {
     public void run() {
         playerThread = Thread.currentThread();
         env.logger.log(Level.INFO, "Thread " + Thread.currentThread().getName() + "starting.");
-        try {
-            while (isCardDealt) {
-                synchronized (waitForCards) {
-                    waitForCards.wait(); //waiting in the beginning until cards are dealt
-                }
-            }
-        }catch (Exception ingored) {}
+        PlayerWait(); //waiting until all cards are dealt
 
         if (!human) createArtificialIntelligence();
 
@@ -109,7 +103,6 @@ public class Player implements Runnable {
                     int[] cards = table.getPlayerCards(id);
                     try { //manages that only one player can go to the dealer each time
                         sem.acquire();
-                        env.logger.log(Level.INFO,"acquired the semaphore ");
                         dealer.checkIfSet(id, cards);
                         env.logger.log(Level.INFO,"talked to dealer from player side ");
                     }
@@ -171,7 +164,7 @@ public class Player implements Runnable {
      * @post - the player's score is increased by 1.
      * @post - the player's score is updated in the ui.
      */
-    public void point() {
+    public void point() { //need to add that sleep only for a second
         env.ui.setScore(id, ++score);
         long freezeTime = env.config.pointFreezeMillis;
         env.ui.setFreeze(this.id,freezeTime);
@@ -208,5 +201,17 @@ public class Player implements Runnable {
     public void setIsCardDealt(boolean isCardDealt)
     {
         this.isCardDealt = isCardDealt;
+    }
+
+    public void PlayerWait() {
+        try {
+            env.logger.log(Level.INFO,Thread.currentThread().getName() + " waiting ");
+            while (isCardDealt) {
+                synchronized (waitForCards) {
+                    waitForCards.wait(); //waiting in the beginning until cards are dealt
+                }
+            }
+        } catch (Exception ingored) {
+        }
     }
 }

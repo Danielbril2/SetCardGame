@@ -69,9 +69,9 @@ public class Dealer implements Runnable {
     public void run() {
         env.logger.log(Level.INFO, "Thread " + Thread.currentThread().getName() + " starting.");
 
-        env.logger.log(Level.INFO, "loading players");
         CreatePlayersThreads(); // creating players threads
-        env.logger.log(Level.INFO, "loaded players succesfuly");
+
+        shuffleCards();
 
         while (!shouldFinish()) {
             placeCardsOnTable();
@@ -119,16 +119,22 @@ public class Dealer implements Runnable {
      * Checks cards should be removed from the table and removes them.
      */
     private void removeCardsFromTable(int[] cards) {
-        for (Thread p : playerThreads) { //do wait to all players
-            try { // can be error?
-                p.wait();
-            } catch (InterruptedException ignored) {
-            }
+        for (Player p: players) { //do wait to all players
+            p.setIsCardDealt(false);
+            p.PlayerWait();
         }
+
+        for (int card: cards)
+            System.out.println(card);
+
         for (int cardId : cards) { // remove the cards of the set from the table and the deck
-            int slot = table.cardToSlot[cardId];
+            //System.out.println(cards);
+            env.logger.log(Level.INFO,Integer.toString(cardId));
+            int slot = table.cardToSlot[cardId]; //problem here
             table.removeCard(slot);
         }
+
+        env.logger.log(Level.INFO, "succesfully removed cards from table and players are waiting");
     }
 
     /**
@@ -206,11 +212,8 @@ public class Dealer implements Runnable {
      * Returns all the cards from the table to the deck.
      */
     private void removeAllCardsFromTable() {
-        for (Thread p : playerThreads) { //all players should wait while there are no cards
-            try {
-                p.wait();
-            } catch (InterruptedException ignored) {
-            }
+        for (Player p : players) { //all players should wait while there are no cards
+            p.PlayerWait();
         }
         env.ui.removeTokens();
         // adds the cards from the table to the deck and resets the arrays
@@ -223,6 +226,10 @@ public class Dealer implements Runnable {
     public void checkIfSet(int playerId, int[] cards) {
         Player p = players[playerId];
         boolean isSet = utilimpl.testSet(cards);
+
+        for (int card: cards)
+            System.out.println(card);
+
         env.logger.log(Level.INFO, Boolean.toString(isSet));
         if (isSet) {
             p.point();
