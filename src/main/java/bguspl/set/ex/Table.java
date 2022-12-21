@@ -191,7 +191,7 @@ public class Table {
     }
 
     private void initializeData() {
-        this.tokens = new Integer[env.config.players][env.config.featureCount];
+        this.tokens = new Integer[env.config.players][3];
         this.numOfTokens = new Integer[env.config.players];
 
         for (Integer[] token: tokens)

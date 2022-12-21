@@ -106,7 +106,6 @@ public class Player implements Runnable {
                 //ask table if we have 3 tokens
                 boolean hasSet = table.isCheck(id);
                 if (hasSet) {
-                    env.logger.log(Level.INFO,"we have 3 tokens");
                     int[] cards = table.getPlayerCards(id);
                     try { //manages that only one player can go to the dealer each time
                         sem.acquire();
@@ -162,12 +161,8 @@ public class Player implements Runnable {
      * @param slot - the slot corresponding to the key pressed.
      */
     public void keyPressed(int slot) {
-        // TODO implement
-        env.logger.log(Level.INFO, "key pressed");
-        if (actionQueue.size() < env.config.featureCount) {
+        if (actionQueue.size() < 3)
             actionQueue.add(slot);
-            env.logger.log(Level.INFO, "added key to queue");
-        }
     }
 
     /**
@@ -178,32 +173,22 @@ public class Player implements Runnable {
      */
     public void point() {
         env.ui.setScore(id, ++score);
-        long startTime = System.currentTimeMillis();
-        long remainTime = System.currentTimeMillis() - startTime;
-        while (remainTime < env.config.pointFreezeMillis)
-        {
-            env.ui.setFreeze(this.id,remainTime);
-            remainTime = System.currentTimeMillis() - startTime;
-        }
-
-
-        int ignored = table.countCards(); // this part is just for demonstration in the unit tests
-        //env.ui.setScore(id, ++score);
+        long freezeTime = env.config.pointFreezeMillis;
+        env.ui.setFreeze(this.id,freezeTime);
+        try {Thread.sleep(freezeTime);}
+        catch (InterruptedException ignored){}
+        env.ui.setFreeze(this.id,0);
     }
 
     /**
      * Penalize a player and perform other related actions.
      */
     public void penalty() {
-        long startTime = System.currentTimeMillis();
-        long remainTime = System.currentTimeMillis() - startTime;
-        //we are in a loop for a period of time, so we cannot do anything
-        //not sure if it works, maybe need to sleep for some time
-        while (remainTime < env.config.penaltyFreezeMillis)
-        {
-            env.ui.setFreeze(this.id,remainTime);
-            remainTime = System.currentTimeMillis() - startTime;
-        }
+        long freezeTime = env.config.penaltyFreezeMillis;
+        env.ui.setFreeze(this.id,freezeTime);
+        try {Thread.sleep(freezeTime);}
+        catch (InterruptedException ignored){}
+        env.ui.setFreeze(this.id,0);
     }
 
     public int getScore() {

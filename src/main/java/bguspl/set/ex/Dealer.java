@@ -200,24 +200,6 @@ public class Dealer implements Runnable {
         }
 
         lastUpdate = System.currentTimeMillis();
-
-
-        /*
-        if(reset){
-            sleepTime = 1000; //one second
-            sleepUntilWokenOrTimeout();
-            env.ui.setCountdown(env.config.turnTimeoutMillis, false);
-            reshuffleTime = System.currentTimeMillis() + env.config.turnTimeoutMillis;
-        }
-        else if(reshuffleTime - System.currentTimeMillis() < 10000){
-            sleepTime = 10;
-            sleepUntilWokenOrTimeout();
-            env.ui.setCountdown(reshuffleTime - System.currentTimeMillis(), true);
-        }
-        else
-            env.ui.setCountdown(reshuffleTime - System.currentTimeMillis(), false);
-
-         */
     }
 
     /**
@@ -238,15 +220,13 @@ public class Dealer implements Runnable {
         }
     }
 
-    // TODO should be synchronized, two players cannot access same function in the same time
-    //maybe not, added semaphore
     public void checkIfSet(int playerId, int[] cards) {
-        //or maybe add to action queue and juster than implement to prevent locks?
         Player p = players[playerId];
         boolean isSet = utilimpl.testSet(cards);
+        env.logger.log(Level.INFO, Boolean.toString(isSet));
         if (isSet) {
             p.point();
-            removeCardsFromTable(cards); // TODO remove the cards of the legal set from the table
+            removeCardsFromTable(cards);
             placeCardsOnTable();
         } else
             p.penalty();
