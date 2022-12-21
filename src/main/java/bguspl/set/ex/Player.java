@@ -135,7 +135,7 @@ public class Player implements Runnable {
                 Random rand = new Random();
                 int slot = rand.nextInt(12);
                 keyPressed(slot);
-                try {Thread.sleep(10); //to make it no so fast
+                try {Thread.sleep(1); //to make it no so fast
                 } catch (InterruptedException ignored) {}
 
             }
@@ -149,7 +149,6 @@ public class Player implements Runnable {
      * Called when the game should be terminated due to an external event.
      */
     public void terminate() {
-        // TODO implement
         terminate = true;
         Thread.currentThread().interrupt();
     }
@@ -172,7 +171,7 @@ public class Player implements Runnable {
      */
     public void point() { //need to add that sleep only for a second
         env.ui.setScore(id, ++score);
-        long freezeTime = env.config.penaltyFreezeMillis;
+        long freezeTime = env.config.pointFreezeMillis;
         long updateTime = 1000; //second
         env.ui.setFreeze(this.id, freezeTime);
         while (freezeTime > 0) {

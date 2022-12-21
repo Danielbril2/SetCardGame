@@ -153,6 +153,9 @@ public class Dealer implements Runnable {
             placeCardsOnTable();
         }
 
+        if (env.config.hints)
+            table.hints();
+
         // notify all the players that they can return playing
         for (Player p: players)
             p.setIsCardDealt(true);
