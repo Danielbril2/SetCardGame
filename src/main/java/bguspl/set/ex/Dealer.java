@@ -197,7 +197,6 @@ public class Dealer implements Runnable {
     private void removeAllCardsFromTable() {
         for (Player p : players) { //all players should wait while there are no cards
             p.setIsCardDealt(false);
-            env.logger.log(Level.INFO, Integer.toString(p.id) + " waiting");
             p.PlayerWait();
         }
         env.ui.removeTokens();
