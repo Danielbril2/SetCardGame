@@ -5,6 +5,7 @@ import bguspl.set.Env;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 /**
  * This class contains the data that is visible to the player.
@@ -28,7 +29,7 @@ public class Table {
      */
     protected final Integer[] cardToSlot; // slot per card (if any)
 
-    private Integer[][] tokens; //tokens[playerId][allTokens]
+    private Integer[][] tokens; //tokens[playerId][slot1,slot2, slot3]
     private Integer[] numOfTokens; //represents how many placed tokens each player have
 
     /**
@@ -42,8 +43,7 @@ public class Table {
         this.env = env;
         this.slotToCard = slotToCard;
         this.cardToSlot = cardToSlot;
-        this.tokens = new Integer[env.config.players][3]; //max cards per set is 3
-        this.numOfTokens = new Integer[env.config.players];
+        initializeData();
     }
 
     /**
@@ -96,7 +96,6 @@ public class Table {
         cardToSlot[card] = slot;
         slotToCard[slot] = card;
 
-        // TODO implement
         env.ui.placeCard(card,slot);
     }
 
@@ -106,11 +105,22 @@ public class Table {
      */
     public void removeCard(int slot) {
         try {
-            Thread.sleep(env.config.tableDelayMillis); //do we need this?
+            Thread.sleep(env.config.tableDelayMillis);
         } catch (InterruptedException ignored) {}
 
-        // TODO implement
+
         int card = slotToCard[slot];
+        //first delete the tokens
+        for (int i = 0; i < tokens.length;i++) //for each player
+        {
+            int playerTokens = numOfTokens[i];
+            for (int j = 0; j < playerTokens; j++) //check all his tokens
+            {
+                if (tokens[i][j] == slot) //if he has a token that will be deleted
+                    removeToken(i,slot);
+            }
+        }
+
         slotToCard[slot] = null;
         cardToSlot[card] = null;
         env.ui.removeCard(slot);
@@ -122,14 +132,11 @@ public class Table {
      * @param slot   - the slot on which to place the token.
      */
     public void placeToken(int player, int slot) {
-        // TODO implement
-        Integer[] playersAction = tokens[player];
         int tokenOfPlayer = numOfTokens[player];
         if (tokenOfPlayer < 3) //add slot to token
         {
-            playersAction[tokenOfPlayer] = slot;
+            tokens[player][tokenOfPlayer] = slot;
             numOfTokens[player]++;
-            tokens[player] = playersAction; //save the changes
 
             env.ui.placeToken(player,slot);
         }
@@ -142,7 +149,6 @@ public class Table {
      * @return       - true iff a token was successfully removed.
      */
     public boolean removeToken(int player, int slot) {
-        // TODO implement
         Integer[] playersAction = tokens[player];
         int tokenOfPlayer = numOfTokens[player];
         boolean isRemoved = false;
@@ -168,8 +174,7 @@ public class Table {
     }
 
     // checks if we placed token, if so then removes, else, puts the token
-    public void makeAction(int player, int slot)
-    {
+    public void makeAction(int player, int slot) {
         Integer[] playerTokens = this.tokens[player];
         for (Integer playerToken : playerTokens)
             if (playerToken == slot) { // remove token
@@ -177,21 +182,35 @@ public class Table {
                 return;
             }
         //add token
-        placeToken(player,slot);
+        placeToken(player, slot);
     }
 
     public boolean isCheck(int player)
     {
-        return tokens[player].length == 3; //returns true if we has 3 tokens
+        return numOfTokens[player] == 3; //returns true if we have 3 tokens
     }
 
     public int[] getPlayerCards(int player)
     {
         Integer[] playerTokens = tokens[player];
+
         int[] res = new int[3];
-        for (int i = 0; i < playerTokens.length; i++)
+        for (int i = 0; i < numOfTokens[player]; i++) {
             res[i] = slotToCard[playerTokens[i]];
+        }
 
         return res;
+    }
+
+    private void initializeData() {
+        this.tokens = new Integer[env.config.players][3];
+        this.numOfTokens = new Integer[env.config.players];
+
+        for (Integer[] token: tokens)
+        {
+            Arrays.fill(token,-1);
+        }
+
+        Arrays.fill(numOfTokens,0);
     }
 }

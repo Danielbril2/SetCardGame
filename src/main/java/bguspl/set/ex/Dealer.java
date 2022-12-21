@@ -45,9 +45,9 @@ public class Dealer implements Runnable {
 
     private long sleepTime = 100; // the time (in milliseconds) that the dealer need to sleep
 
-    private final Thread[] playerThreads;
     private final Semaphore sem;
     private long lastUpdate; //the last time we updated the time
+    private final Object waitForCards;
 
     public Dealer(Env env, Table table, Player[] players) {
         this.env = env;
@@ -55,9 +55,9 @@ public class Dealer implements Runnable {
         this.players = players;
         deck = IntStream.range(0, env.config.deckSize).boxed().collect(Collectors.toList());
         utilimpl = new UtilImpl(env.config);
-        playerThreads = new Thread[env.config.players];
         sem = new Semaphore(1); //we only want one player to access dealer each time
         lastUpdate = 0;
+        waitForCards = new Object();
     }
 
     /**
@@ -67,9 +67,9 @@ public class Dealer implements Runnable {
     public void run() {
         env.logger.log(Level.INFO, "Thread " + Thread.currentThread().getName() + " starting.");
 
-        env.logger.log(Level.INFO, "loading players");
         CreatePlayersThreads(); // creating players threads
-        env.logger.log(Level.INFO, "loaded players succesfuly");
+
+        shuffleCards();
 
         while (!shouldFinish()) {
             placeCardsOnTable();
@@ -98,10 +98,11 @@ public class Dealer implements Runnable {
      */
     public void terminate() {
         // TODO implement
-        terminate = true;
-        //need to also terminate all players
         for (Player p : players)
             p.terminate();
+        terminate = true;
+        //need to also terminate all players
+        Thread.currentThread().interrupt();
     }
 
     /**
@@ -117,16 +118,16 @@ public class Dealer implements Runnable {
      * Checks cards should be removed from the table and removes them.
      */
     private void removeCardsFromTable(int[] cards) {
-        for (Thread p : playerThreads) { //do wait to all players
-            try { // can be error?
-                p.wait();
-            } catch (InterruptedException ignored) {
-            }
+        for (Player p: players) { //do wait to all players
+            p.setIsCardDealt(false);
+            p.PlayerWait();
         }
+
         for (int cardId : cards) { // remove the cards of the set from the table and the deck
             int slot = table.cardToSlot[cardId];
             table.removeCard(slot);
         }
+
     }
 
     /**
@@ -150,7 +151,12 @@ public class Dealer implements Runnable {
         }
 
         // notify all the players that they can return playing
-        notifyAll();
+        for (Player p: players)
+            p.setIsCardDealt(true);
+        try {
+            synchronized (waitForCards) {waitForCards.notifyAll();}
+        }
+        catch (Exception ignored) {}
     }
 
     private void shuffleCards() {
@@ -172,56 +178,26 @@ public class Dealer implements Runnable {
      */
     private void updateTimerDisplay(boolean reset) {
         if (reset) {
-            int MINUTE = 60000;
-            env.ui.setCountdown(MINUTE, false);
+            env.ui.setCountdown(env.config.turnTimeoutMillis, false);
         } else {
             //check if a second has passed since last update, if yes that update countdown
             //else, change sleepTime to the difference
-
             int SECOND = 1000;
-            if (System.currentTimeMillis() - lastUpdate < SECOND) //second haven't passed yet
-                sleepTime = SECOND - (System.currentTimeMillis() - lastUpdate);
-            else //need to update after second have passed
-            {
-                long timeLeft = reshuffleTime - System.currentTimeMillis();
-                boolean isRed = timeLeft < 10 * SECOND;
-                env.ui.setCountdown(timeLeft, isRed);
-
-                sleepTime = SECOND;
-                lastUpdate = System.currentTimeMillis();
-            }
+            long timeLeft = reshuffleTime - System.currentTimeMillis();
+            boolean isRed = timeLeft < env.config.turnTimeoutWarningMillis;
+            env.ui.setCountdown(timeLeft, isRed);
+            sleepTime = SECOND / 100;
         }
 
-        lastUpdate = System.currentTimeMillis();
-
-
-        /*
-        if(reset){
-            sleepTime = 1000; //one second
-            sleepUntilWokenOrTimeout();
-            env.ui.setCountdown(env.config.turnTimeoutMillis, false);
-            reshuffleTime = System.currentTimeMillis() + env.config.turnTimeoutMillis;
-        }
-        else if(reshuffleTime - System.currentTimeMillis() < 10000){
-            sleepTime = 10;
-            sleepUntilWokenOrTimeout();
-            env.ui.setCountdown(reshuffleTime - System.currentTimeMillis(), true);
-        }
-        else
-            env.ui.setCountdown(reshuffleTime - System.currentTimeMillis(), false);
-
-         */
     }
 
     /**
      * Returns all the cards from the table to the deck.
      */
     private void removeAllCardsFromTable() {
-        for (Thread p : playerThreads) { //all players should wait while there are no cards
-            try {
-                p.wait();
-            } catch (InterruptedException ignored) {
-            }
+        for (Player p : players) { //all players should wait while there are no cards
+            p.setIsCardDealt(false);
+            p.PlayerWait();
         }
         env.ui.removeTokens();
         // adds the cards from the table to the deck and resets the arrays
@@ -231,15 +207,13 @@ public class Dealer implements Runnable {
         }
     }
 
-    // TODO should be synchronized, two players cannot access same function in the same time
-    //maybe not, added semaphore
     public void checkIfSet(int playerId, int[] cards) {
-        //or maybe add to action queue and juster than implement to prevent locks?
         Player p = players[playerId];
         boolean isSet = utilimpl.testSet(cards);
+
         if (isSet) {
             p.point();
-            removeCardsFromTable(cards); // TODO remove the cards of the legal set from the table
+            removeCardsFromTable(cards); //need to also update the tokens
             placeCardsOnTable();
         } else
             p.penalty();
@@ -267,9 +241,12 @@ public class Dealer implements Runnable {
     }
 
     private void CreatePlayersThreads() {
-        env.logger.log(Level.INFO, "start of function ");
         String[] names = env.config.playerNames;
-        for (Player p : players) p.setSemaphore(this.sem); //giving each player the same semaphore
+        for (Player p : players)
+        {
+            p.setSemaphore(this.sem); //giving each player the same semaphore
+            p.setLockObject(this.waitForCards); //giving each player the same lock object
+        }
 
         for (int i = 0; i < players.length; i++) {
             Thread player;
@@ -280,12 +257,7 @@ public class Dealer implements Runnable {
                 player = new Thread(players[i], name);
             }
 
-            playerThreads[i] = player;
             player.start();
-            env.logger.log(Level.INFO, player.getName() + "started ");
-            //players[i].Wait(); //telling the player to wait until the cards are dealt
-
         }
-        env.logger.log(Level.INFO, "end of function");
     }
 }

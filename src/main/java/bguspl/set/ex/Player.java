@@ -58,6 +58,8 @@ public class Player implements Runnable {
     private Queue<Integer> actionQueue;
     private Dealer dealer;
     private Semaphore sem;
+    private Object waitForCards;
+    private boolean isCardDealt;
 
     /**
      * The class constructor.
@@ -75,6 +77,7 @@ public class Player implements Runnable {
         this.human = human;
         this.actionQueue = new LinkedList<>();
         this.dealer = dealer;
+        isCardDealt = false;
     }
 
     /**
@@ -83,11 +86,8 @@ public class Player implements Runnable {
     @Override
     public void run() {
         playerThread = Thread.currentThread();
-        env.logger.log(Level.INFO, "Thread " + Thread.currentThread().getName() + "starting.");
-        try {
-            env.logger.log(Level.INFO, Thread.currentThread().getName() + "waiting ");
-            playerThread.wait(); //waiting in the beginning until cards are dealt
-        } catch (InterruptedException ingored) {}
+        env.logger.log(Level.INFO, "Thread " + Thread.currentThread().getName() + " starting.");
+        PlayerWait(); //waiting until all cards are dealt
 
         if (!human) createArtificialIntelligence();
 
@@ -122,16 +122,22 @@ public class Player implements Runnable {
         // note: this is a very very smart AI (!)
         aiThread = new Thread(() -> {
             env.logger.log(Level.INFO, "Thread " + Thread.currentThread().getName() + " starting.");
-
             while (!terminate) {
+                try {
+                    while (!isCardDealt) {
+                        synchronized (waitForCards) {
+                            waitForCards.wait(); //waiting in the beginning until cards are dealt
+                        }
+                    }
+                } catch (Exception ignored) {}
+
                 //need to generate random number between 0-11
                 Random rand = new Random();
                 int slot = rand.nextInt(12);
                 keyPressed(slot);
-
-                try {
-                    synchronized (this) { wait(); }
+                try {Thread.sleep(10); //to make it no so fast
                 } catch (InterruptedException ignored) {}
+
             }
 
             env.logger.log(Level.INFO, "Thread " + Thread.currentThread().getName() + " terminated.");
@@ -145,6 +151,7 @@ public class Player implements Runnable {
     public void terminate() {
         // TODO implement
         terminate = true;
+        Thread.currentThread().interrupt();
     }
 
     /**
@@ -153,7 +160,6 @@ public class Player implements Runnable {
      * @param slot - the slot corresponding to the key pressed.
      */
     public void keyPressed(int slot) {
-        // TODO implement
         if (actionQueue.size() < 3)
             actionQueue.add(slot);
     }
@@ -164,34 +170,34 @@ public class Player implements Runnable {
      * @post - the player's score is increased by 1.
      * @post - the player's score is updated in the ui.
      */
-    public void point() {
+    public void point() { //need to add that sleep only for a second
         env.ui.setScore(id, ++score);
-        long startTime = System.currentTimeMillis();
-        long remainTime = System.currentTimeMillis() - startTime;
-        while (remainTime < env.config.pointFreezeMillis)
-        {
-            env.ui.setFreeze(this.id,remainTime);
-            remainTime = System.currentTimeMillis() - startTime;
+        long freezeTime = env.config.penaltyFreezeMillis;
+        long updateTime = 1000; //second
+        env.ui.setFreeze(this.id, freezeTime);
+        while (freezeTime > 0) {
+            try {Thread.sleep(updateTime);
+            } catch (InterruptedException ignored) {}
+            freezeTime -= updateTime;
+            env.ui.setFreeze(this.id,freezeTime);
         }
-
-
-        int ignored = table.countCards(); // this part is just for demonstration in the unit tests
-        //env.ui.setScore(id, ++score);
+        env.ui.setFreeze(this.id, 0);
     }
 
     /**
      * Penalize a player and perform other related actions.
      */
     public void penalty() {
-        long startTime = System.currentTimeMillis();
-        long remainTime = System.currentTimeMillis() - startTime;
-        //we are in a loop for a period of time, so we cannot do anything
-        //not sure if it works, maybe need to sleep for some time
-        while (remainTime < env.config.penaltyFreezeMillis)
-        {
-            env.ui.setFreeze(this.id,remainTime);
-            remainTime = System.currentTimeMillis() - startTime;
+        long freezeTime = env.config.penaltyFreezeMillis;
+        long updateTime = 1000; //second
+        env.ui.setFreeze(this.id, freezeTime);
+        while (freezeTime > 0) {
+            try {Thread.sleep(updateTime);
+            } catch (InterruptedException ignored) {}
+            freezeTime -= updateTime;
+            env.ui.setFreeze(this.id,freezeTime);
         }
+        env.ui.setFreeze(this.id, 0);
     }
 
     public int getScore() {
@@ -203,12 +209,24 @@ public class Player implements Runnable {
         this.sem = sem;
     }
 
-    public void Wait()
+    public void setLockObject(Object obj)
     {
+        this.waitForCards = obj;
+    }
+
+    public void setIsCardDealt(boolean isCardDealt)
+    {
+        this.isCardDealt = isCardDealt;
+    }
+
+    public void PlayerWait() {
         try {
-            playerThread.wait();
-        }catch(Exception ignored) {
-            env.logger.log(Level.WARNING, ignored.toString());
+            while (!isCardDealt) {
+                synchronized (waitForCards) {
+                    waitForCards.wait(); //waiting in the beginning until cards are dealt
+                }
+            }
+        } catch (Exception ignored) {
         }
     }
 }
