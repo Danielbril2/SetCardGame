@@ -45,7 +45,6 @@ public class Dealer implements Runnable {
 
     private long sleepTime = 100; // the time (in milliseconds) that the dealer need to sleep
 
-    private final Thread[] playerThreads;
     private final Semaphore sem;
     private long lastUpdate; //the last time we updated the time
     private final Object waitForCards;
@@ -56,7 +55,6 @@ public class Dealer implements Runnable {
         this.players = players;
         deck = IntStream.range(0, env.config.deckSize).boxed().collect(Collectors.toList());
         utilimpl = new UtilImpl(env.config);
-        playerThreads = new Thread[env.config.players];
         sem = new Semaphore(1); //we only want one player to access dealer each time
         lastUpdate = 0;
         waitForCards = new Object();
@@ -75,7 +73,6 @@ public class Dealer implements Runnable {
 
         while (!shouldFinish()) {
             placeCardsOnTable();
-            env.logger.log(Level.INFO, "one minute has starting");
             timerLoop(); //for one minute
             updateTimerDisplay(true); //reset after one minute
             env.logger.log(Level.INFO, "one minute has passed");
@@ -183,8 +180,7 @@ public class Dealer implements Runnable {
      */
     private void updateTimerDisplay(boolean reset) {
         if (reset) {
-            int MINUTE = 60000;
-            env.ui.setCountdown(MINUTE, false);
+            env.ui.setCountdown(env.config.turnTimeoutMillis, false);
         } else {
             //check if a second has passed since last update, if yes that update countdown
             //else, change sleepTime to the difference
@@ -195,7 +191,7 @@ public class Dealer implements Runnable {
             else //need to update after second have passed
             {
                 long timeLeft = reshuffleTime - System.currentTimeMillis();
-                boolean isRed = timeLeft < 10 * SECOND;
+                boolean isRed = timeLeft < env.config.turnTimeoutWarningMillis;
                 env.ui.setCountdown(timeLeft, isRed);
 
                 sleepTime = SECOND;
@@ -211,6 +207,8 @@ public class Dealer implements Runnable {
      */
     private void removeAllCardsFromTable() {
         for (Player p : players) { //all players should wait while there are no cards
+            p.setIsCardDealt(false);
+            env.logger.log(Level.INFO, Integer.toString(p.id) + " waiting");
             p.PlayerWait();
         }
         env.ui.removeTokens();
@@ -259,7 +257,7 @@ public class Dealer implements Runnable {
         for (Player p : players)
         {
             p.setSemaphore(this.sem); //giving each player the same semaphore
-            p.setLockObject(this.waitForCards);
+            p.setLockObject(this.waitForCards); //giving each player the same lock object
         }
 
         for (int i = 0; i < players.length; i++) {
@@ -269,9 +267,9 @@ public class Dealer implements Runnable {
             else {
                 String name = "PLAYER " + i;
                 player = new Thread(players[i], name);
+                env.logger.log(Level.INFO,name + " starting");
             }
 
-            playerThreads[i] = player;
             player.start();
         }
     }

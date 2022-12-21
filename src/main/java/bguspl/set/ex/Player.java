@@ -205,6 +205,7 @@ public class Player implements Runnable {
 
     public void PlayerWait() {
         try {
+            env.logger.log(Level.INFO,"this is player class");
             env.logger.log(Level.INFO,Thread.currentThread().getName() + " waiting ");
             while (isCardDealt) {
                 synchronized (waitForCards) {
