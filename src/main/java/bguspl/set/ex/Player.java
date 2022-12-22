@@ -94,15 +94,15 @@ public class Player implements Runnable {
         while (!terminate) {
             if (actionQueue.size() > 0)
             {
-                int action = actionQueue.poll();
+                int action = actionQueue.poll(); //slot
                 //implement action
                 table.makeAction(id,action);
                 //ask table if we have 3 tokens
                 boolean hasSet = table.isCheck(id);
                 if (hasSet) {
-                    int[] cards = table.getPlayerCards(id);
                     try { //manages that only one player can go to the dealer each time
                         sem.acquire();
+                        int[] cards = table.getPlayerCards(id);
                         dealer.checkIfSet(id, cards);
                     }
                     catch (InterruptedException ignored) {}
@@ -135,7 +135,7 @@ public class Player implements Runnable {
                 Random rand = new Random();
                 int slot = rand.nextInt(12);
                 keyPressed(slot);
-                try {Thread.sleep(10); //to make it no so fast
+                try {Thread.sleep(1); //to make it no so fast
                 } catch (InterruptedException ignored) {}
 
             }
@@ -149,7 +149,6 @@ public class Player implements Runnable {
      * Called when the game should be terminated due to an external event.
      */
     public void terminate() {
-        // TODO implement
         terminate = true;
         Thread.currentThread().interrupt();
     }
@@ -172,7 +171,7 @@ public class Player implements Runnable {
      */
     public void point() { //need to add that sleep only for a second
         env.ui.setScore(id, ++score);
-        long freezeTime = env.config.penaltyFreezeMillis;
+        long freezeTime = env.config.pointFreezeMillis;
         long updateTime = 1000; //second
         env.ui.setFreeze(this.id, freezeTime);
         while (freezeTime > 0) {
@@ -181,7 +180,6 @@ public class Player implements Runnable {
             freezeTime -= updateTime;
             env.ui.setFreeze(this.id,freezeTime);
         }
-        env.ui.setFreeze(this.id, 0);
     }
 
     /**
@@ -197,7 +195,6 @@ public class Player implements Runnable {
             freezeTime -= updateTime;
             env.ui.setFreeze(this.id,freezeTime);
         }
-        env.ui.setFreeze(this.id, 0);
     }
 
     public int getScore() {
@@ -220,8 +217,8 @@ public class Player implements Runnable {
     }
 
     public void PlayerWait() {
-        try {
-            while (!isCardDealt) {
+        try{
+            while (isCardDealt) {
                 synchronized (waitForCards) {
                     waitForCards.wait(); //waiting in the beginning until cards are dealt
                 }
