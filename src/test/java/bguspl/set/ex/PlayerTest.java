@@ -33,6 +33,8 @@ class PlayerTest {
     private Dealer dealer;
     @Mock
     private Logger logger;
+    Env env;
+    @Mock
 
     void assertInvariants() {
         assertTrue(player.id >= 0);
@@ -54,7 +56,6 @@ class PlayerTest {
 
     @Test
     void point() {
-
         // force table.countCards to return 3
         when(table.countCards()).thenReturn(3); // this part is just for demonstration
 
@@ -69,5 +70,17 @@ class PlayerTest {
 
         // check that ui.setScore was called with the player's id and the correct score
         verify(ui).setScore(eq(player.id), eq(expectedScore));
+    }
+
+    @Test
+    void penalty() {
+
+        long millies = env.config.penaltyFreezeMillis;
+
+        player.penalty();
+
+        assertEquals(millies, player);
+
+        verify(ui).setFreeze(eq(player.id), eq(millies));
     }
 }

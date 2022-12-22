@@ -1,11 +1,12 @@
 package bguspl.set.ex;
 
-import java.util.*;
+import bguspl.set.Env;
+
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Random;
 import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
-import java.util.Random;
-
-import bguspl.set.Env;
 
 /**
  * This class manages the players' threads and data

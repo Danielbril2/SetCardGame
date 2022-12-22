@@ -95,6 +95,10 @@ class TableTest {
         placeSomeCardsAndAssert();
     }
 
+
+
+
+
     static class MockUserInterface implements UserInterface {
         @Override
         public void placeCard(int card, int slot) {}
