@@ -1,0 +1,200 @@
+[2022-12-21 15:14:06] [INFO   ] cannot read configuration file config.properties trying from resources.
+[2022-12-21 15:14:06] [INFO   ] configuration file was loaded from resources directory.
+[2022-12-21 15:14:07] [INFO   ] Thread dealer starting.
+[2022-12-21 15:14:07] [INFO   ] Thread Meni starting.
+[2022-12-21 15:14:07] [INFO   ] Thread Marina starting.
+[2022-12-21 15:14:07] [SEVERE ] placing card 32 in slot 0
+[2022-12-21 15:14:08] [SEVERE ] placing card 10 in slot 1
+[2022-12-21 15:14:08] [SEVERE ] placing card 7 in slot 2
+[2022-12-21 15:14:08] [SEVERE ] placing card 28 in slot 3
+[2022-12-21 15:14:08] [SEVERE ] placing card 31 in slot 4
+[2022-12-21 15:14:08] [SEVERE ] placing card 1 in slot 5
+[2022-12-21 15:14:08] [SEVERE ] placing card 75 in slot 6
+[2022-12-21 15:14:08] [SEVERE ] placing card 65 in slot 7
+[2022-12-21 15:14:08] [SEVERE ] placing card 44 in slot 8
+[2022-12-21 15:14:08] [SEVERE ] placing card 55 in slot 9
+[2022-12-21 15:14:08] [SEVERE ] placing card 58 in slot 10
+[2022-12-21 15:14:09] [SEVERE ] placing card 38 in slot 11
+[2022-12-21 15:14:16] [SEVERE ] Key 81 was pressed by player 0
+[2022-12-21 15:14:16] [SEVERE ] player 0 placing token on slot 0
+[2022-12-21 15:14:18] [SEVERE ] Key 87 was pressed by player 0
+[2022-12-21 15:14:18] [SEVERE ] player 0 placing token on slot 1
+[2022-12-21 15:14:19] [SEVERE ] Key 69 was pressed by player 0
+[2022-12-21 15:14:19] [SEVERE ] player 0 placing token on slot 2
+[2022-12-21 15:14:19] [SEVERE ] setting player 0 freeze to 3000
+[2022-12-21 15:14:20] [SEVERE ] setting player 0 freeze to 2000
+[2022-12-21 15:14:21] [SEVERE ] setting player 0 freeze to 1000
+[2022-12-21 15:14:22] [SEVERE ] setting player 0 freeze to 0
+[2022-12-21 15:14:22] [SEVERE ] setting player 0 freeze to 0
+[2022-12-21 15:14:24] [SEVERE ] Key 68 was pressed by player 0
+[2022-12-21 15:14:24] [SEVERE ] setting player 0 freeze to 3000
+[2022-12-21 15:14:25] [SEVERE ] setting player 0 freeze to 2000
+[2022-12-21 15:14:26] [SEVERE ] setting player 0 freeze to 1000
+[2022-12-21 15:14:27] [SEVERE ] setting player 0 freeze to 0
+[2022-12-21 15:14:27] [SEVERE ] setting player 0 freeze to 0
+[2022-12-21 15:14:27] [SEVERE ] Key 81 was pressed by player 0
+[2022-12-21 15:14:27] [SEVERE ] removing player 0 token from slot 0
+[2022-12-21 15:14:28] [SEVERE ] Key 87 was pressed by player 0
+[2022-12-21 15:14:28] [SEVERE ] removing player 0 token from slot 1
+[2022-12-21 15:14:28] [SEVERE ] Key 69 was pressed by player 0
+[2022-12-21 15:14:28] [SEVERE ] removing player 0 token from slot 2
+[2022-12-21 15:14:36] [SEVERE ] Key 67 was pressed by player 0
+[2022-12-21 15:14:36] [SEVERE ] player 0 placing token on slot 10
+[2022-12-21 15:14:40] [SEVERE ] Key 70 was pressed by player 0
+[2022-12-21 15:14:40] [SEVERE ] player 0 placing token on slot 7
+[2022-12-21 15:14:45] [SEVERE ] Key 68 was pressed by player 0
+[2022-12-21 15:14:45] [SEVERE ] player 0 placing token on slot 6
+[2022-12-21 15:14:45] [SEVERE ] setting player 0 freeze to 3000
+[2022-12-21 15:14:46] [SEVERE ] setting player 0 freeze to 2000
+[2022-12-21 15:14:47] [SEVERE ] setting player 0 freeze to 1000
+[2022-12-21 15:14:48] [SEVERE ] setting player 0 freeze to 0
+[2022-12-21 15:14:48] [SEVERE ] setting player 0 freeze to 0
+[2022-12-21 15:15:00] [SEVERE ] Key 75 was pressed by player 1
+[2022-12-21 15:15:00] [SEVERE ] player 1 placing token on slot 5
+[2022-12-21 15:15:02] [SEVERE ] Key 74 was pressed by player 1
+[2022-12-21 15:15:02] [SEVERE ] player 1 placing token on slot 4
+[2022-12-21 15:15:02] [SEVERE ] Key 70 was pressed by player 0
+[2022-12-21 15:15:02] [SEVERE ] removing player 0 token from slot 7
+[2022-12-21 15:15:03] [SEVERE ] Key 75 was pressed by player 1
+[2022-12-21 15:15:03] [SEVERE ] removing player 1 token from slot 5
+[2022-12-21 15:15:03] [SEVERE ] Key 74 was pressed by player 1
+[2022-12-21 15:15:03] [SEVERE ] removing player 1 token from slot 4
+[2022-12-21 15:15:04] [SEVERE ] Key 74 was pressed by player 1
+[2022-12-21 15:15:04] [SEVERE ] player 1 placing token on slot 4
+[2022-12-21 15:15:04] [SEVERE ] Key 85 was pressed by player 1
+[2022-12-21 15:15:04] [SEVERE ] player 1 placing token on slot 0
+[2022-12-21 15:15:04] [SEVERE ] Key 73 was pressed by player 1
+[2022-12-21 15:15:04] [SEVERE ] player 1 placing token on slot 1
+[2022-12-21 15:15:04] [SEVERE ] setting player 1 freeze to 3000
+[2022-12-21 15:15:05] [SEVERE ] Key 79 was pressed by player 1
+[2022-12-21 15:15:05] [SEVERE ] setting player 1 freeze to 2000
+[2022-12-21 15:15:06] [SEVERE ] Key 75 was pressed by player 1
+[2022-12-21 15:15:06] [SEVERE ] setting player 1 freeze to 1000
+[2022-12-21 15:15:07] [SEVERE ] Key 83 was pressed by player 0
+[2022-12-21 15:15:07] [SEVERE ] player 0 placing token on slot 5
+[2022-12-21 15:15:07] [SEVERE ] Key 68 was pressed by player 0
+[2022-12-21 15:15:07] [SEVERE ] Key 70 was pressed by player 0
+[2022-12-21 15:15:07] [SEVERE ] Key 83 was pressed by player 0
+[2022-12-21 15:15:07] [SEVERE ] Key 69 was pressed by player 0
+[2022-12-21 15:15:07] [SEVERE ] Key 70 was pressed by player 0
+[2022-12-21 15:15:07] [SEVERE ] Key 83 was pressed by player 0
+[2022-12-21 15:15:07] [SEVERE ] Key 69 was pressed by player 0
+[2022-12-21 15:15:07] [SEVERE ] Key 65 was pressed by player 0
+[2022-12-21 15:15:07] [SEVERE ] Key 83 was pressed by player 0
+[2022-12-21 15:15:07] [SEVERE ] Key 68 was pressed by player 0
+[2022-12-21 15:15:07] [SEVERE ] setting player 1 freeze to 0
+[2022-12-21 15:15:07] [SEVERE ] setting player 1 freeze to 0
+[2022-12-21 15:15:07] [SEVERE ] setting player 1 freeze to 3000
+[2022-12-21 15:15:07] [SEVERE ] Key 65 was pressed by player 0
+[2022-12-21 15:15:08] [SEVERE ] Key 87 was pressed by player 0
+[2022-12-21 15:15:08] [SEVERE ] Key 68 was pressed by player 0
+[2022-12-21 15:15:08] [SEVERE ] Key 65 was pressed by player 0
+[2022-12-21 15:15:08] [SEVERE ] Key 70 was pressed by player 0
+[2022-12-21 15:15:08] [SEVERE ] Key 65 was pressed by player 0
+[2022-12-21 15:15:08] [SEVERE ] setting player 1 freeze to 2000
+[2022-12-21 15:15:08] [SEVERE ] Key 70 was pressed by player 0
+[2022-12-21 15:15:09] [SEVERE ] Key 69 was pressed by player 0
+[2022-12-21 15:15:09] [SEVERE ] Key 65 was pressed by player 0
+[2022-12-21 15:15:09] [SEVERE ] setting player 1 freeze to 1000
+[2022-12-21 15:15:10] [SEVERE ] setting player 1 freeze to 0
+[2022-12-21 15:15:10] [SEVERE ] setting player 1 freeze to 0
+[2022-12-21 15:15:10] [SEVERE ] setting player 1 freeze to 3000
+[2022-12-21 15:15:11] [SEVERE ] setting player 1 freeze to 2000
+[2022-12-21 15:15:12] [SEVERE ] setting player 1 freeze to 1000
+[2022-12-21 15:15:13] [SEVERE ] setting player 1 freeze to 0
+[2022-12-21 15:15:13] [SEVERE ] setting player 1 freeze to 0
+[2022-12-21 15:15:13] [SEVERE ] setting player 0 freeze to 3000
+[2022-12-21 15:15:14] [SEVERE ] setting player 0 freeze to 2000
+[2022-12-21 15:15:15] [SEVERE ] setting player 0 freeze to 1000
+[2022-12-21 15:15:16] [SEVERE ] setting player 0 freeze to 0
+[2022-12-21 15:15:16] [SEVERE ] setting player 0 freeze to 0
+[2022-12-21 15:15:16] [SEVERE ] removing player 0 token from slot 6
+[2022-12-21 15:15:16] [SEVERE ] player 0 placing token on slot 7
+[2022-12-21 15:15:16] [SEVERE ] setting player 0 freeze to 3000
+[2022-12-21 15:15:17] [SEVERE ] setting player 0 freeze to 2000
+[2022-12-21 15:15:18] [SEVERE ] setting player 0 freeze to 1000
+[2022-12-21 15:15:19] [SEVERE ] setting player 0 freeze to 0
+[2022-12-21 15:15:19] [SEVERE ] setting player 0 freeze to 0
+[2022-12-21 15:15:19] [SEVERE ] removing player 0 token from slot 5
+[2022-12-21 15:16:20] [SEVERE ] Key 81 was pressed by player 0
+[2022-12-21 15:16:20] [SEVERE ] player 0 placing token on slot 0
+[2022-12-21 15:16:20] [SEVERE ] setting player 0 freeze to 3000
+[2022-12-21 15:16:20] [SEVERE ] Key 81 was pressed by player 0
+[2022-12-21 15:16:21] [SEVERE ] setting player 0 freeze to 2000
+[2022-12-21 15:16:21] [SEVERE ] Key 81 was pressed by player 0
+[2022-12-21 15:16:22] [SEVERE ] setting player 0 freeze to 1000
+[2022-12-21 15:16:23] [SEVERE ] setting player 0 freeze to 0
+[2022-12-21 15:16:23] [SEVERE ] setting player 0 freeze to 0
+[2022-12-21 15:16:23] [SEVERE ] removing player 0 token from slot 0
+[2022-12-21 15:16:23] [SEVERE ] player 0 placing token on slot 0
+[2022-12-21 15:16:23] [SEVERE ] setting player 0 freeze to 3000
+[2022-12-21 15:16:24] [SEVERE ] setting player 0 freeze to 2000
+[2022-12-21 15:16:25] [SEVERE ] setting player 0 freeze to 1000
+[2022-12-21 15:16:26] [SEVERE ] setting player 0 freeze to 0
+[2022-12-21 15:16:26] [SEVERE ] setting player 0 freeze to 0
+[2022-12-21 15:16:27] [SEVERE ] Key 81 was pressed by player 0
+[2022-12-21 15:16:27] [SEVERE ] removing player 0 token from slot 0
+[2022-12-21 15:16:31] [SEVERE ] Key 67 was pressed by player 0
+[2022-12-21 15:16:31] [SEVERE ] removing player 0 token from slot 10
+[2022-12-21 15:16:33] [SEVERE ] Key 70 was pressed by player 0
+[2022-12-21 15:16:33] [SEVERE ] removing player 0 token from slot 7
+[2022-12-21 15:17:14] [SEVERE ] Key 74 was pressed by player 1
+[2022-12-21 15:17:14] [SEVERE ] removing player 1 token from slot 4
+[2022-12-21 15:17:16] [SEVERE ] Key 85 was pressed by player 1
+[2022-12-21 15:17:16] [SEVERE ] removing player 1 token from slot 0
+[2022-12-21 15:17:17] [SEVERE ] Key 73 was pressed by player 1
+[2022-12-21 15:17:17] [SEVERE ] removing player 1 token from slot 1
+[2022-12-21 15:17:51] [SEVERE ] Key 65 was pressed by player 0
+[2022-12-21 15:17:51] [SEVERE ] player 0 placing token on slot 4
+[2022-12-21 15:17:51] [SEVERE ] Key 83 was pressed by player 0
+[2022-12-21 15:17:51] [SEVERE ] player 0 placing token on slot 5
+[2022-12-21 15:17:52] [SEVERE ] Key 68 was pressed by player 0
+[2022-12-21 15:17:52] [SEVERE ] player 0 placing token on slot 6
+[2022-12-21 15:17:52] [SEVERE ] setting player 0 freeze to 3000
+[2022-12-21 15:17:53] [SEVERE ] setting player 0 freeze to 2000
+[2022-12-21 15:17:54] [SEVERE ] Key 68 was pressed by player 0
+[2022-12-21 15:17:54] [SEVERE ] Key 83 was pressed by player 0
+[2022-12-21 15:17:54] [SEVERE ] setting player 0 freeze to 1000
+[2022-12-21 15:17:55] [SEVERE ] setting player 0 freeze to 0
+[2022-12-21 15:17:55] [SEVERE ] setting player 0 freeze to 0
+[2022-12-21 15:17:55] [SEVERE ] removing player 0 token from slot 6
+[2022-12-21 15:17:55] [SEVERE ] removing player 0 token from slot 5
+[2022-12-21 15:17:56] [SEVERE ] Key 65 was pressed by player 0
+[2022-12-21 15:17:56] [SEVERE ] removing player 0 token from slot 4
+[2022-12-21 15:18:19] [SEVERE ] Key 86 was pressed by player 0
+[2022-12-21 15:18:19] [SEVERE ] player 0 placing token on slot 11
+[2022-12-21 15:18:21] [SEVERE ] Key 67 was pressed by player 0
+[2022-12-21 15:18:21] [SEVERE ] player 0 placing token on slot 10
+[2022-12-21 15:18:26] [SEVERE ] Key 67 was pressed by player 0
+[2022-12-21 15:18:26] [SEVERE ] removing player 0 token from slot 10
+[2022-12-21 15:18:26] [SEVERE ] Key 86 was pressed by player 0
+[2022-12-21 15:18:26] [SEVERE ] removing player 0 token from slot 11
+[2022-12-21 15:20:05] [SEVERE ] Key 67 was pressed by player 0
+[2022-12-21 15:20:05] [SEVERE ] player 0 placing token on slot 10
+[2022-12-21 15:20:10] [SEVERE ] Key 67 was pressed by player 0
+[2022-12-21 15:20:10] [SEVERE ] removing player 0 token from slot 10
+[2022-12-21 15:21:39] [SEVERE ] Key 69 was pressed by player 0
+[2022-12-21 15:21:39] [SEVERE ] player 0 placing token on slot 2
+[2022-12-21 15:21:43] [SEVERE ] Key 69 was pressed by player 0
+[2022-12-21 15:21:43] [SEVERE ] removing player 0 token from slot 2
+[2022-12-21 15:21:45] [SEVERE ] Key 67 was pressed by player 0
+[2022-12-21 15:21:45] [SEVERE ] player 0 placing token on slot 10
+[2022-12-21 15:21:45] [SEVERE ] Key 68 was pressed by player 0
+[2022-12-21 15:21:45] [SEVERE ] player 0 placing token on slot 6
+[2022-12-21 15:21:46] [SEVERE ] Key 70 was pressed by player 0
+[2022-12-21 15:21:46] [SEVERE ] player 0 placing token on slot 7
+[2022-12-21 15:21:46] [SEVERE ] setting player 0 freeze to 3000
+[2022-12-21 15:21:47] [SEVERE ] setting player 0 freeze to 2000
+[2022-12-21 15:21:47] [SEVERE ] Key 70 was pressed by player 0
+[2022-12-21 15:21:47] [SEVERE ] Key 68 was pressed by player 0
+[2022-12-21 15:21:47] [SEVERE ] Key 67 was pressed by player 0
+[2022-12-21 15:21:48] [SEVERE ] setting player 0 freeze to 1000
+[2022-12-21 15:21:49] [SEVERE ] setting player 0 freeze to 0
+[2022-12-21 15:21:49] [SEVERE ] setting player 0 freeze to 0
+[2022-12-21 15:21:49] [SEVERE ] removing player 0 token from slot 7
+[2022-12-21 15:21:49] [SEVERE ] removing player 0 token from slot 6
+[2022-12-21 15:21:49] [SEVERE ] removing player 0 token from slot 10
+[2022-12-21 15:22:03] [SEVERE ] Exit button pressed
+[2022-12-21 15:22:03] [INFO   ] Thanks for playing... it was fun!
+[2022-12-21 15:22:03] [INFO   ] Thread Marina terminated.
+[2022-12-21 15:22:03] [INFO   ] Thread Meni terminated.

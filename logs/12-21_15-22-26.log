@@ -1,0 +1,25 @@
+[2022-12-21 15:22:26] [INFO   ] cannot read configuration file config.properties trying from resources.
+[2022-12-21 15:22:26] [INFO   ] configuration file was loaded from resources directory.
+[2022-12-21 15:22:27] [INFO   ] Thread dealer starting.
+[2022-12-21 15:22:27] [INFO   ] Thread Meni starting.
+[2022-12-21 15:22:27] [INFO   ] Thread Marina starting.
+[2022-12-21 15:22:27] [SEVERE ] placing card 50 in slot 0
+[2022-12-21 15:22:27] [SEVERE ] placing card 12 in slot 1
+[2022-12-21 15:22:27] [SEVERE ] placing card 51 in slot 2
+[2022-12-21 15:22:27] [SEVERE ] placing card 65 in slot 3
+[2022-12-21 15:22:28] [SEVERE ] placing card 28 in slot 4
+[2022-12-21 15:22:28] [SEVERE ] placing card 69 in slot 5
+[2022-12-21 15:22:28] [SEVERE ] placing card 18 in slot 6
+[2022-12-21 15:22:28] [SEVERE ] placing card 7 in slot 7
+[2022-12-21 15:22:28] [SEVERE ] placing card 57 in slot 8
+[2022-12-21 15:22:28] [SEVERE ] placing card 39 in slot 9
+[2022-12-21 15:22:28] [SEVERE ] placing card 15 in slot 10
+[2022-12-21 15:22:28] [SEVERE ] placing card 74 in slot 11
+[2022-12-21 15:22:33] [SEVERE ] Key 90 was pressed by player 0
+[2022-12-21 15:22:33] [SEVERE ] player 0 placing token on slot 8
+[2022-12-21 15:22:43] [SEVERE ] Key 90 was pressed by player 0
+[2022-12-21 15:22:43] [SEVERE ] removing player 0 token from slot 8
+[2022-12-21 15:23:44] [SEVERE ] Exit button pressed
+[2022-12-21 15:23:44] [INFO   ] Thanks for playing... it was fun!
+[2022-12-21 15:23:44] [INFO   ] Thread Marina terminated.
+[2022-12-21 15:23:44] [INFO   ] Thread Meni terminated.
