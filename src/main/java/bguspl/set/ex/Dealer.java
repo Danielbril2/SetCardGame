@@ -74,11 +74,8 @@ public class Dealer implements Runnable {
         while (!shouldFinish()) {
             placeCardsOnTable();
             timerLoop(); //for one minute
-            env.logger.log(Level.INFO,"starting loop");
             updateTimerDisplay(true); //reset after one minute
-            env.logger.log(Level.INFO,"one minute ended");
             removeAllCardsFromTable();
-            env.logger.log(Level.INFO,"removing cards");
             shuffleCards();
         }
         announceWinners();
@@ -103,7 +100,6 @@ public class Dealer implements Runnable {
         for (Player p : players)
             p.terminate();
         terminate = true;
-        //need to also terminate all players
     }
 
     /**
@@ -146,7 +142,9 @@ public class Dealer implements Runnable {
         }
         // if there is no legal set on the table
         List<Integer> cards = new ArrayList<>();
-        Collections.addAll(cards, table.slotToCard);
+        try {
+            Collections.addAll(cards, table.slotToCard);
+        } catch (Exception e) {terminate = true;}
         boolean legalSetExists = utilimpl.findSets(cards, 1).size() > 0;
         if (!legalSetExists) {
             try {
