@@ -108,22 +108,23 @@ public class Table {
             Thread.sleep(env.config.tableDelayMillis);
         } catch (InterruptedException ignored) {}
 
-
-        int card = slotToCard[slot];
-        //first delete the tokens
-        for (int i = 0; i < tokens.length;i++) //for each player
-        {
-            int playerTokens = numOfTokens[i];
-            for (int j = 0; j < playerTokens; j++) //check all his tokens
+        try {
+            int card = slotToCard[slot];
+            //first delete the tokens
+            for (int i = 0; i < tokens.length; i++) //for each player
             {
-                if (tokens[i][j] == slot) //if he has a token that will be deleted
-                    removeToken(i,slot);
+                int playerTokens = numOfTokens[i];
+                for (int j = 0; j < playerTokens; j++) //check all his tokens
+                {
+                    if (tokens[i][j] == slot) //if he has a token that will be deleted
+                        removeToken(i, slot);
+                }
             }
-        }
 
-        slotToCard[slot] = null;
-        cardToSlot[card] = null;
-        env.ui.removeCard(slot);
+            slotToCard[slot] = null;
+            cardToSlot[card] = null;
+            env.ui.removeCard(slot);
+        } catch (Exception ignored){}
     }
 
     /**
@@ -196,7 +197,8 @@ public class Table {
 
         int[] res = new int[3];
         for (int i = 0; i < numOfTokens[player]; i++) {
-            res[i] = slotToCard[playerTokens[i]];
+            if (slotToCard[playerTokens[i]] != null)
+                res[i] = slotToCard[playerTokens[i]];
         }
 
         return res;
