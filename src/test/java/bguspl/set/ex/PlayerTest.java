@@ -33,6 +33,7 @@ class PlayerTest {
     private Dealer dealer;
     @Mock
     private Logger logger;
+    private Env env;
 
     void assertInvariants() {
         assertTrue(player.id >= 0);
@@ -69,5 +70,21 @@ class PlayerTest {
 
         // check that ui.setScore was called with the player's id and the correct score
         verify(ui).setScore(eq(player.id), eq(expectedScore));
+    }
+    @Test
+    void penalty() { // check if the penalty freeze time is correct
+        long expectedFreezeTime = env.config.penaltyFreezeMillis;
+
+        player.penalty();
+
+        assertEquals(expectedFreezeTime, player.getFreezeTime());
+
+        verify(ui).setFreeze(eq(player.id), eq(expectedFreezeTime));
+    }
+
+    @Test
+    void terminate() { // test if the player has terminated after the dealer has terminated
+        dealer.terminate();
+        assertTrue(player.getTerminate());
     }
 }

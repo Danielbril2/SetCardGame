@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class TableTest {
+class DealerTest {
 
     Table table;
     private Integer[] slotToCard;
@@ -101,30 +101,30 @@ class TableTest {
     }
 
     @Test
-    void removeCard(){
+    void removeAllCardsFromTable(){ // check if all the cards are removed from the table correctly
         fillAllSlots();
-        table.removeCard(1);
-        table.removeCard(2);
+        dealer.removeAllCardsFromTable();
 
-        new MockUserInterface().removeCard(1);
-        new MockUserInterface().removeCard(2);
+        for (int i = 0; i < slotToCard.length; ++i) {
+            new MockUserInterface().removeCard(i);
+        }
 
-        assertNull(slotToCard[1]);
-        assertNull(slotToCard[2]);
+        // check if the 2 arrays full of nulls
+        for (Integer slot : slotToCard) assertNull(slot);
+        for (Integer card : cardToSlot) assertNull(card);
     }
 
     @Test
-    void placeToken(){
-        fillAllSlots();
-        table.placeToken(1,1);
-        new MockUserInterface().placeToken(1, 1);
+    void placeCardsOnTable(){ // check if the func place the cards correctly (if deck.Size() >= 12)
+        dealer.placeCardsOnTable();
 
-        assertEquals(table.tokens[player.id][0], 1);
+        for (int i = 0; i < table.slotToCard.length; i++) {
+            if (table.slotToCard[i] == null)
+                new MockUserInterface().placeCard(dealer.getDeck().remove(0), i);
+        }
 
-        table.placeToken(1,8);
-        new MockUserInterface().placeToken(1, 8);
-
-        assertEquals(table.tokens[player.id][1], 8);
+        for (Integer slot : slotToCard) assertNotNull(slot);
+        for (Integer card : cardToSlot) assertNotNull(card);
     }
 
     static class MockUserInterface implements UserInterface {
